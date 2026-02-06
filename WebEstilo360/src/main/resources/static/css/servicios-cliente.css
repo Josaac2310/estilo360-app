@@ -1,0 +1,310 @@
+/* Página de Servicios Cliente - Estilos */
+
+/* Grid de servicios */
+.servicios-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+    animation: fadeIn 0.5s ease;
+}
+
+/* Card de servicio */
+.servicio-card {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 8px 25px rgba(30, 64, 175, 0.1);
+    overflow: hidden;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.servicio-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 35px rgba(30, 64, 175, 0.2);
+}
+
+/* Header del servicio */
+.servicio-header {
+    background: linear-gradient(135deg, #2563eb, #1e40af);
+    padding: 2rem;
+    text-align: center;
+    color: white;
+}
+
+.servicio-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.servicio-nombre {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+/* Contenido del servicio */
+.servicio-content {
+    padding: 1.5rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+
+.servicio-descripcion {
+    color: #64748b;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+    flex: 1;
+}
+
+.servicio-descripcion.no-descripcion {
+    font-style: italic;
+    opacity: 0.7;
+}
+
+/* Detalles del servicio */
+.servicio-detalles {
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background: #f8fafc;
+    border-radius: 10px;
+}
+
+.servicio-detalle {
+    flex: 1;
+    text-align: center;
+}
+
+.detalle-label {
+    font-size: 0.8rem;
+    color: #64748b;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.3rem;
+}
+
+.detalle-value {
+    font-size: 1.3rem;
+    color: #1e40af;
+    font-weight: 700;
+}
+
+.detalle-value.precio {
+    color: #10b981;
+}
+
+/* Footer del servicio */
+.servicio-footer {
+    padding: 0 1.5rem 1.5rem;
+}
+
+.btn-reservar-servicio {
+    width: 100%;
+    background: linear-gradient(135deg, #2563eb, #1e40af);
+    color: white;
+    padding: 1rem;
+    border-radius: 10px;
+    text-decoration: none;
+    font-size: 1rem;
+    font-weight: 600;
+    text-align: center;
+    transition: all 0.3s ease;
+    display: block;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-reservar-servicio:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4);
+}
+
+/* Estado vacío */
+.empty-servicios {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 8px 25px rgba(30, 64, 175, 0.1);
+}
+
+.empty-servicios-icon {
+    font-size: 5rem;
+    margin-bottom: 1rem;
+    opacity: 0.3;
+}
+
+.empty-servicios h3 {
+    font-size: 1.5rem;
+    color: #1e40af;
+    margin-bottom: 0.5rem;
+}
+
+.empty-servicios p {
+    color: #64748b;
+    font-size: 1rem;
+}
+
+/* Header de la página */
+.page-title {
+    font-size: 2rem;
+    color: #1e40af;
+    margin-bottom: 0.5rem;
+}
+
+.page-subtitle {
+    color: #64748b;
+    font-size: 1rem;
+    margin-bottom: 2rem;
+    margin-right: 19rem;
+}
+
+/* Botón volver */
+.btn-volver {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: #f1f5f9;
+    color: #475569;
+    padding: 0.7rem 1.5rem;
+    border-radius: 10px;
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    border: 1px solid #e2e8f0;
+    margin-bottom: 2rem;
+}
+
+.btn-volver:hover {
+    background: #e2e8f0;
+    transform: translateX(-4px);
+}
+
+/* Botón descargar PDF */
+.btn-descargar-pdf {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+    padding: 0.8rem 1.5rem;
+    border-radius: 10px;
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    white-space: nowrap;
+    
+}
+
+.btn-descargar-pdf:hover {
+    background: linear-gradient(135deg, #059669, #047857);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+}
+
+.page-header {
+    margin-bottom: 2rem;
+}
+
+.page-header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+/* Buscador */
+.search-box {
+    width: 45%;
+    max-width: 800px;
+    margin: 0 auto;
+    padding-left: 13rem;
+}
+
+.search-input {
+    width: 100%;
+    padding: 1rem 1.5rem;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    font-size: 1rem;
+    transition: all 0.2s ease;
+    background: white;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.search-input::placeholder {
+    color: #94a3b8;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .page-header-top {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .btn-descargar-pdf {
+        width: 100%;
+        padding-left: 30px;
+    }
+
+    .search-box {
+        max-width: 100%;
+    }
+}
+@media (max-width: 768px) {
+    .page-header {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 1rem;
+    }
+
+    .btn-descargar-pdf {
+        width: 100%;
+        justify-content: center;
+    }
+}
+/* Responsive */
+@media (max-width: 768px) {
+    .servicios-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .servicio-detalles {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .page-title {
+        font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 640px) {
+    .servicio-header {
+        padding: 1.5rem;
+    }
+
+    .servicio-nombre {
+        font-size: 1.2rem;
+    }
+
+    .servicio-icon {
+        font-size: 2.5rem;
+    }
+}

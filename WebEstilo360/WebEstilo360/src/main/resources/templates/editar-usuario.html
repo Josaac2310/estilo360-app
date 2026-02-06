@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Usuario - Estilo360</title>
+
+    <!-- Material Symbols -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+
+    <link rel="stylesheet" th:href="@{/css/usuarios.css}">
+</head>
+<body>
+
+<!-- Header -->
+<header class="header">
+    <div class="header-container">
+
+        <div class="header-logo icon-text">
+            <span class="material-symbols-outlined">auto_awesome</span>
+            <span>Estilo360</span>
+        </div>
+
+        <div class="header-right">
+
+            <div class="user-info icon-text">
+                <span class="user-label">Admin:</span>
+                <span class="user-name" th:text="${nombre}">Usuario</span>
+            </div>
+
+            <a th:href="@{/logout}" class="btn-logout icon-text">
+                <span class="material-symbols-outlined">logout</span>
+                <span>Cerrar Sesión</span>
+            </a>
+
+        </div>
+    </div>
+</header>
+
+<!-- Main Content -->
+<main class="main-content">
+    <div class="container">
+
+        <!-- Breadcrumb -->
+        <div class="breadcrumb">
+    <a th:href="@{/dashboard}" style="display:inline-flex; align-items:center; gap:4px;">
+        <span class="material-symbols-outlined" style="font-size:20px; line-height:1;">home</span>
+        <span>Dashboard</span>
+    </a>
+
+    <span style="margin: 0 6px;">›</span>
+
+    <a th:href="@{/usuarios}" style="display:inline-flex; align-items:center; gap:4px;">
+        <span class="material-symbols-outlined" style="font-size:20px; line-height:1;">group</span>
+        <span>Usuarios</span>
+    </a>
+
+    <span style="margin: 0 6px;">›</span>
+
+    <span style="display:inline-flex; align-items:center; gap:4px;">
+        <span class="material-symbols-outlined" style="font-size:20px; line-height:1;">edit</span>
+        <span>Editar Usuario</span>
+    </span>
+</div>
+
+
+        <!-- Form Container -->
+        <div class="form-container">
+
+            <div class="form-header icon-text">
+                <h1 class="icon-text">
+                    <span class="material-symbols-outlined">edit</span>
+                    <span>Editar Usuario</span>
+                </h1>
+                <p>Modifica los datos del usuario</p>
+            </div>
+
+            <!-- Información del ID (solo lectura) -->
+            <div class="info-card">
+                <div class="info-item">
+                    <span class="info-label">ID del Usuario:</span>
+                    <span class="info-value" th:text="${usuario.id_usuario}">1</span>
+                </div>
+            </div>
+
+            <!-- Alertas -->
+            <div th:if="${error}" class="alert alert-error icon-text">
+                <span class="material-symbols-outlined">error</span>
+                <span th:text="${error}"></span>
+            </div>
+
+            <form th:action="@{/usuarios/editar/{id}(id=${usuario.id_usuario})}" method="post" th:object="${usuario}">
+
+                <div class="form-group">
+                    <label>Nombre Completo *</label>
+                    <input 
+                        type="text" 
+                        th:field="*{nombre_completo}" 
+                        placeholder="Nombre completo del usuario"
+                        maxlength="50"
+                        required>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Correo Electrónico *</label>
+                        <input 
+                            type="email" 
+                            th:field="*{correo}" 
+                            placeholder="usuario@email.com"
+                            required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Móvil *</label>
+                        <input 
+                            type="text" 
+                            th:field="*{movil}" 
+                            placeholder="633076809"
+                            pattern="[0-9]{9,15}"
+                            maxlength="15"
+                            required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Rol *</label>
+                    <select th:field="*{rol}" required>
+                        <option value="cliente" class="icon-text">
+                            Cliente
+                        </option>
+                        <option value="admin" class="icon-text">
+                            Administrador
+                        </option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Nueva Contraseña</label>
+                    <input 
+                        type="password" 
+                        th:field="*{contrasena}" 
+                        placeholder="Dejar vacío para no cambiar"
+                        minlength="6">
+                    <small>Solo completa este campo si deseas cambiar la contraseña</small>
+                </div>
+
+                <div class="form-actions">
+                    <a th:href="@{/usuarios}" class="btn-secondary icon-text">
+                        <span class="material-symbols-outlined">arrow_back</span>
+                        <span>Cancelar</span>
+                    </a>
+                    <button type="submit" class="btn-primary icon-text">
+                        <span class="material-symbols-outlined">check_circle</span>
+                        <span>Guardar Cambios</span>
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</main>
+
+</body>
+</html>

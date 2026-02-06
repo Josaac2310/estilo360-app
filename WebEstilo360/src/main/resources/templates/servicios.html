@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Servicios - Estilo360</title>
+
+    <link rel="stylesheet" th:href="@{/css/servicios.css}">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+</head>
+<body>
+
+<header class="header">
+        <div class="header-container">
+            <div class="header-logo">
+                <span>Estilo360</span>
+            </div>
+            <div class="header-right">
+                <div class="user-info">
+                    <span class="user-label">Admin:</span>
+                    <span class="user-name" th:text="${nombre}">Usuario</span>
+                </div>
+                <a th:href="@{/logout}" class="btn-logout" style="display:inline-flex; align-items:center; gap:6px;">
+	                <span class="material-symbols-outlined">logout</span>
+	                <span>Cerrar Sesión</span>
+	            </a>
+            </div>
+        </div>
+    </header>
+
+<!-- Main Content -->
+<main class="main-content">
+    <div class="container">
+
+        <!-- Breadcrumb -->
+        <div class="breadcrumb"
+             style="display:flex; align-items:center; gap:6px;">
+
+            <a th:href="@{/dashboard}"
+               style="display:flex; align-items:center; gap:4px;">
+                <span class="material-symbols-outlined" style="line-height:1;">home</span>
+                <span>Dashboard</span>
+            </a>
+
+            <span>›</span>
+			<span class="material-symbols-outlined" style="line-height:1;">content_cut</span>
+            <span>Servicios</span>
+        </div>
+
+        <!-- Header Section -->
+        <div class="page-header">
+            <div>
+                <h1>Gestión de Servicios</h1>
+                <p>Administra todos los servicios disponibles</p>
+            </div>
+
+            <a th:href="@{/servicios/nuevo}" class="btn-primary"
+               style="display:flex; align-items:center; gap:6px;">
+                <span class="material-symbols-outlined" style="line-height:1;">add</span>
+                <span>Nuevo Servicio</span>
+            </a>
+        </div>
+
+        <!-- Alertas -->
+        <div th:if="${success}" class="alert alert-success"
+             style="display:flex; align-items:center; gap:6px;">
+            <span class="material-symbols-outlined" style="line-height:1;">check_circle</span>
+            <span th:text="${success}"></span>
+        </div>
+
+        <div th:if="${error}" class="alert alert-error"
+             style="display:flex; align-items:center; gap:6px;">
+            <span class="material-symbols-outlined" style="line-height:1;">error</span>
+            <span th:text="${error}"></span>
+        </div>
+
+        <!-- Tabla de Servicios -->
+        <div class="table-container">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Nombre</th>
+                    <th>Descripción</th>
+                    <th>Precio</th>
+                    <th>Duración</th>
+                    <th>Acciones</th>
+                </tr>
+                </thead>
+
+                <tbody>
+
+                <tr th:if="${#lists.isEmpty(servicios)}">
+                    <td colspan="6" class="empty-message"
+                        style="display:flex; align-items:center; justify-content:center; gap:6px;">
+                        <span class="material-symbols-outlined" style="line-height:1;">content_cut</span>
+                        <span>No hay servicios registrados</span>
+                    </td>
+                </tr>
+
+                <tr th:each="servicio : ${servicios}">
+                    <td th:text="${servicio.id_servicio}">1</td>
+                    <td th:text="${servicio.nombre}">Corte de pelo</td>
+                    <td th:text="${servicio.descripcion}">Descripción</td>
+                    <td>
+                        <span class="precio" th:text="${servicio.precio + '€'}">15.00€</span>
+                    </td>
+                    <td th:text="${servicio.duracion_minutos + ' min'}">30 min</td>
+
+                    <td class="actions"
+                        style="display:flex; align-items:center; gap:6px;">
+
+                        <a th:href="@{/servicios/editar/{id}(id=${servicio.id_servicio})}"
+                           class="btn-edit"
+                           title="Editar servicio"
+                           style="display:flex; align-items:center;">
+                            <span class="material-symbols-outlined" style="line-height:1;">edit</span>
+                        </a>
+
+                        <button type="button"
+                                class="btn-delete btn-delete-servicio"
+                                th:attr="data-id=${servicio.id_servicio},data-nombre=${servicio.nombre}"
+                                title="Eliminar servicio"
+                                style="display:flex; align-items:center;">
+                            <span class="material-symbols-outlined" style="line-height:1;">delete</span>
+                        </button>
+
+                    </td>
+                </tr>
+
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</main>
+
+<!-- Modal de Confirmación -->
+<div id="modalEliminar" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 style="display:flex; align-items:center; gap:60px;">
+			    <span class="material-symbols-outlined">warning</span>
+			    <span style="position:relative; ">Confirmar Eliminación</span>
+			</h2>
+        </div>
+
+        <div class="modal-body">
+            <p>¿Estás seguro de que deseas eliminar el servicio:</p>
+            <p class="modal-item-name" id="nombreServicio"></p>
+            <p class="modal-warning">Esta acción no se puede deshacer.</p>
+        </div>
+
+        <div class="modal-footer">
+            <button onclick="cerrarModal()" class="btn-secondary">
+                Cancelar
+            </button>
+
+            <form id="formEliminar" method="post" style="display:inline;">
+                <button type="submit" class="btn-danger"
+                        style="display:flex; align-items:center; gap:6px;">
+                    <span class="material-symbols-outlined" style="line-height:1;">delete_forever</span>
+                    <span>Eliminar</span>
+                </button>
+            </form>
+        </div>
+
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const botonesEliminar = document.querySelectorAll('.btn-delete-servicio');
+    botonesEliminar.forEach(function(boton) {
+        boton.addEventListener('click', function() {
+            const id = this.getAttribute('data-id');
+            const nombre = this.getAttribute('data-nombre');
+            abrirModalEliminar(id, nombre);
+        });
+    });
+});
+
+function abrirModalEliminar(id, nombre) {
+    document.getElementById('formEliminar').action = '/servicios/eliminar/' + id;
+    document.getElementById('nombreServicio').textContent = nombre;
+    document.getElementById('modalEliminar').style.display = 'flex';
+}
+
+function cerrarModal() {
+    document.getElementById('modalEliminar').style.display = 'none';
+}
+
+window.onclick = function(event) {
+    const modal = document.getElementById('modalEliminar');
+    if (event.target === modal) cerrarModal();
+}
+</script>
+
+</body>
+</html>

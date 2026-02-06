@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Admin - Estilo360</title>
+    <link rel="stylesheet" th:href="@{/css/dashboard-admin.css}">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+    <div class="header-container">
+
+        <div class="header-logo"
+             style="display:flex; align-items:center; gap:6px;">
+            <span>Estilo360</span>
+        </div>
+
+        <div class="header-right">
+
+            <div class="user-info"
+                 style="display:flex; align-items:center; gap:4px;">
+                <span class="user-label">Admin:</span>
+                <span class="user-name" th:text="${nombre_completo}">Usuario</span>
+            </div>
+
+            <a th:href="@{/logout}" class="btn-logout"
+               style="display:flex; align-items:center; gap:6px;">
+                <span class="material-symbols-outlined" style="line-height:1;">logout</span>
+                <span>Cerrar Sesión</span>
+            </a>
+
+        </div>
+    </div>
+</header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            
+            <!-- Mensaje de éxito -->
+            <div th:if="${success != null}" class="alert alert-success">
+                <strong>✅</strong> <span th:text="${success}"></span>
+            </div>
+
+            <!-- Título -->
+            <div class="page-title">
+                <h1>Panel de Administración</h1>
+                <p>Gestiona todos los aspectos del sistema desde aquí</p>
+            </div>
+
+            <!-- Cards Grid -->
+            <div class="cards-grid">
+                
+                <!-- Card Citas -->
+                <a href="/citas" class="card">
+                  <span class="card-icon"><span class="material-symbols-outlined" style="font-size: 70px;">calendar_month</span></span>
+                  <h3>Citas</h3>
+                </a>
+
+                <!-- Card Servicios -->
+                <a href="/servicios" class="card">
+                    <span class="card-icon"><span class="material-symbols-outlined" style="font-size: 70px;">content_cut</span></span>
+                    <h3>Servicios</h3>
+                </a>
+
+                <!-- Card Empleados -->
+                <a href="/empleados" class="card">
+                    <span class="card-icon"><span class="material-symbols-outlined" style="font-size: 70px;">badge</span></span>
+                    <h3>Empleados</h3>
+                </a>
+
+                <!-- Card Usuarios -->
+                <a href="/usuarios" class="card">
+                    <span class="card-icon"><span class="material-symbols-outlined" style="font-size: 70px;">groups</span></span>
+                    <h3>Usuarios</h3>
+                </a>
+
+                <!-- Card Reseñas -->
+                <a href="/resenas" class="card">
+                    <span class="card-icon"><span class="material-symbols-outlined" style="font-size: 70px;">star</span></span>
+                    <h3>Reseñas</h3>
+                </a>
+
+            </div>
+        </div>
+    </main>
+</body>
+</html>

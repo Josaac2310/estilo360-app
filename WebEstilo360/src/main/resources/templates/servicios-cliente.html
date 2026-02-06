@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Servicios - Estilo360</title>
+
+    <!-- Material Symbols -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+
+    <!-- CSS principal -->
+    <link rel="stylesheet" th:href="@{/css/citas.css}">
+    <link rel="stylesheet" th:href="@{/css/servicios-cliente.css}">
+    <link rel="stylesheet" th:href="@{/css/dashboard-cliente.css}">
+    <link rel="stylesheet" th:href="@{/css/servicios.css}">
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-container">
+            <div class="header-logo">
+                Estilo360
+            </div>
+
+            <div class="header-right">
+                <!-- Dropdown de usuario -->
+                <div class="user-dropdown" id="userDropdown">
+                    <div class="user-dropdown-trigger" onclick="toggleDropdown()">
+                        <span th:text="${usuario != null ? usuario.nombre_completo : 'Cliente'}">Usuario</span>
+                        <span class="material-symbols-outlined">expand_more</span>
+                    </div>
+
+                    <div class="user-dropdown-menu">
+                        <div class="dropdown-email"
+                             th:text="${usuario != null ? usuario.correo : 'email@example.com'}">
+                            email@example.com
+                        </div>
+
+                        <div class="dropdown-separator"></div>
+
+                        <div class="dropdown-options">
+                            <a href="#" class="dropdown-option">
+                                <span class="material-symbols-outlined dropdown-option-icon">
+                                    person
+                                </span>
+                                <span>Perfil</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <a th:href="@{/logout}" class="btn-logout">
+                    <span class="material-symbols-outlined">logout</span>
+                    Cerrar Sesión
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="container">
+
+            <!-- Botón volver -->
+            <a th:href="@{/dashboard-cliente}" class="btn-volver">
+                ← Volver al dashboard
+            </a>
+
+            <!-- Título -->
+            <div class="page-header">
+			    <div class="page-header-top">
+			        <div>
+			            <h1 class="page-title">Nuestros Servicios </h1>
+			            <p class="page-subtitle">Descubre todos los servicios que ofrecemos</p>
+			        </div>
+			        
+			        <a th:href="@{/cliente-servicios/descargar-pdf}" class="btn-descargar-pdf">
+			             Descargar PDF
+			        </a>
+			    </div>
+			    
+			    <!-- Buscador -->
+			    <div class="search-box">
+			    
+			        <input 
+			            type="text" 
+			            id="buscadorServicios" 
+			            class="search-input" 
+			            placeholder="🔍 Buscar servicio..."
+			            onkeyup="buscarServicios()">
+			    </div>
+			</div>
+
+            <!-- Alertas -->
+            <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
+
+            <!-- Grid de servicios -->
+            <div th:if="${servicios != null and !servicios.isEmpty()}" class="servicios-grid">
+                <div th:each="servicio : ${servicios}" class="servicio-card">
+
+                    <!-- Header del servicio -->
+                    <div class="servicio-header">
+                        <span class="material-symbols-outlined servicio-icon"
+					      style="
+					        font-size:40px;
+					        background:#f5f5f5;
+					        padding:12px;
+					        border-radius:16px;
+					        color:#333;
+					      ">
+					    content_cut
+					</span>
+
+                        <h2 class="servicio-nombre" th:text="${servicio.nombre}">
+                            Corte de Pelo
+                        </h2>
+                    </div>
+
+                    <!-- Contenido del servicio -->
+                    <div class="servicio-content">
+                        <p class="servicio-descripcion"
+                           th:classappend="${servicio.descripcion == null or servicio.descripcion.isEmpty()} ? 'no-descripcion' : ''"
+                           th:text="${servicio.descripcion != null and !servicio.descripcion.isEmpty()} ? ${servicio.descripcion} : 'Sin descripción disponible'">
+                            Descripción del servicio
+                        </p>
+
+                        <!-- Detalles -->
+                        <div class="servicio-detalles">
+                            <div class="servicio-detalle">
+                                <div class="detalle-label">Precio</div>
+                                <div class="detalle-value precio"
+                                     th:text="${servicio.precio} + '€'">
+                                    15€
+                                </div>
+                            </div>
+
+                            <div class="servicio-detalle">
+                                <div class="detalle-label">Duración</div>
+                                <div class="detalle-value"
+                                     th:text="${servicio.duracion_minutos} + ' min'">
+                                    30 min
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Sin servicios -->
+            <div th:if="${servicios == null or servicios.isEmpty()}" class="empty-servicios">
+			    <div class="empty-servicios-icon">✂️</div>
+			    <h3>No hay servicios disponibles</h3>
+			    <p>En este momento no hay servicios para mostrar</p>
+			</div>
+			
+			<!-- Sin resultados de búsqueda (oculto por defecto) -->
+			<div id="sinResultados" class="empty-servicios" style="display: none;">
+			    <div class="empty-servicios-icon">🔍</div>
+			    <h3>No se encontraron servicios</h3>
+			    <p>Intenta con otro término de búsqueda</p>
+			</div>
+
+        </div>
+    </div>
+
+    <script>
+        function toggleDropdown() {
+            const dropdown = document.getElementById('userDropdown');
+            dropdown.classList.toggle('active');
+        }
+
+        document.addEventListener('click', function(event) {
+            const dropdown = document.getElementById('userDropdown');
+            if (!dropdown.contains(event.target)) {
+                dropdown.classList.remove('active');
+            }
+        });
+        
+        
+        
+        
+        function buscarServicios() {
+            const input = document.getElementById('buscadorServicios');
+            const filtro = input.value.toLowerCase().trim();
+            const cards = document.querySelectorAll('.servicio-card');
+            const sinResultados = document.getElementById('sinResultados');
+            
+            let hayResultados = false;
+
+            cards.forEach(card => {
+                const nombreServicio = card.querySelector('.servicio-nombre').textContent.toLowerCase().trim();
+                
+                // Buscar SOLO si el nombre EMPIEZA con el filtro
+                if (nombreServicio.startsWith(filtro)) {
+                    card.style.display = '';
+                    hayResultados = true;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            // Mostrar mensaje si no hay resultados
+            if (!hayResultados && filtro !== '') {
+                sinResultados.style.display = 'block';
+            } else {
+                sinResultados.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro - Estilo360</title>
+    <link rel="stylesheet" th:href="@{/css/login.css}">
+</head>
+<body>
+
+<div class="login-wrapper">
+
+    <!-- Imagen izquierda -->
+    <div class="login-image">
+        <img th:src="@{/images/logoEstilo360.png}" alt="Logo Estilo360">
+    </div>
+
+    <!-- Contenedor derecho -->
+    <div class="login-container">
+
+        <div class="login-header">
+            <h1>Crear cuenta</h1>
+            <p>Únete a Estilo360</p>
+        </div>
+
+        <div class="login-body">
+
+            <!-- Error -->
+            <div th:if="${error}" class="alert alert-error">
+                <strong>Error:</strong>
+                <span th:text="${error}"></span>
+            </div>
+
+            <!-- Éxito -->
+            <div th:if="${success}" class="alert alert-success">
+                <strong>Éxito:</strong>
+                <span th:text="${success}"></span>
+            </div>
+
+            <form th:action="@{/registro}" method="post" th:object="${usuario}">
+
+                <div class="form-group">
+                    <label for="nombre">Nombre completo</label>
+                    <input type="text" id="nombre" th:field="*{nombre_completo}" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="correo">Correo electrónico</label>
+                    <input type="email" id="correo" th:field="*{correo}" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="movil">Móvil</label>
+                    <input type="text" id="movil" th:field="*{movil}" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="contrasena">Contraseña</label>
+                    <input type="password" id="contrasena" th:field="*{contrasena}" required>
+                </div>
+
+                <button type="submit" class="btn-login">
+                    Registrarse
+                </button>
+            </form>
+        </div>
+
+        <div class="register-section">
+            <p>¿Ya tienes cuenta?
+                <a th:href="@{/login}">Inicia sesión</a>
+            </p>
+        </div>
+
+        <div class="login-footer">
+            &copy; 2025 Estilo360
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>

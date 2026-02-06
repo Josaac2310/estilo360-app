@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Perfil - Estilo360</title>
+
+    <!-- Material Symbols -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+
+    <!-- CSS principal -->
+    <link rel="stylesheet" th:href="@{/css/citas.css}">
+    <!-- CSS del dropdown -->
+    <link rel="stylesheet" th:href="@{/css/dashboard-cliente.css}">
+    <!-- CSS específico del perfil -->
+    <link rel="stylesheet" th:href="@{/css/cliente-perfil.css}">
+</head>
+<body>
+
+<header class="header">
+    <div class="header-container">
+        <div class="header-logo" style="display:flex;align-items:center;gap:6px;">
+            Estilo360
+        </div>
+
+        <div class="header-right">
+            <div class="user-dropdown" id="userDropdown">
+                <div class="user-dropdown-trigger"
+                     onclick="toggleDropdown()"
+                     style="display:flex;align-items:center;gap:6px;cursor:pointer;">
+
+                    <span th:text="${usuario != null ? usuario.nombre_completo : 'Cliente'}"
+                          style="line-height:1;">Usuario</span>
+
+                    <span class="material-symbols-outlined"
+                          style="font-size:20px;line-height:1;">expand_more</span>
+                </div>
+
+                <div class="user-dropdown-menu">
+                    <div class="dropdown-email"
+                         th:text="${usuario != null ? usuario.correo : 'email@example.com'}">
+                        email@example.com
+                    </div>
+
+                    <div class="dropdown-separator"></div>
+
+                    <div class="dropdown-options">
+                        <a th:href="@{/cliente-perfil}"
+                           style="display:flex;align-items:center;gap:10px;
+                                  text-decoration:none;color:inherit;">
+                            <span class="material-symbols-outlined"
+                                  style="font-size:20px;line-height:1;">
+                                account_circle
+                            </span>
+                            <span>Perfil</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <a th:href="@{/logout}"
+               class="btn-logout"
+               style="display:inline-flex;align-items:center;gap:6px;">
+                <span class="material-symbols-outlined"
+                      style="font-size:20px;line-height:1;">logout</span>
+                <span style="line-height:1;">Cerrar Sesión</span>
+            </a>
+        </div>
+    </div>
+</header>
+
+<div class="main-content">
+    <div class="container perfil-container">
+
+        <a th:href="@{/dashboard-cliente}" class="btn-volver"
+           style="display:inline-flex;align-items:center;gap:6px;">
+            <span class="material-symbols-outlined" style="line-height:1;">arrow_back</span>
+            Volver al dashboard
+        </a>
+
+        <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+        <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
+
+        <div class="perfil-card">
+
+            <!-- Header perfil -->
+            <div class="perfil-header">
+                <div class="perfil-avatar"
+				     style="
+				         display: flex;
+				         align-items: center;
+				         justify-content: center;
+				         font-size: 3.2rem;
+				         font-weight: 0;
+				         background-color: #e5e7eb;
+				         color: #374151;
+				     ">
+				    <span th:text="${usuario != null ? usuario.nombre_completo.substring(0,1) : 'U'}">
+				        U
+				    </span>
+				</div>
+
+
+
+                <h1 class="perfil-nombre"
+                    th:text="${usuario != null ? usuario.nombre_completo : 'Usuario'}">
+                    Nombre Usuario
+                </h1>
+
+                <p class="perfil-email"
+                   th:text="${usuario != null ? usuario.correo : 'email@example.com'}">
+                    email@example.com
+                </p>
+            </div>
+
+            <!-- Datos personales -->
+            <div class="perfil-section">
+                <h2 class="section-title"
+                    style="display:flex;align-items:center;gap:8px;">
+                    <span class="material-symbols-outlined" style="line-height:1;">
+                        description
+                    </span>
+                    Datos Personales
+                </h2>
+
+                <form id="formPerfil"
+                      th:action="@{/cliente-perfil/actualizar}"
+                      method="post"
+                      class="perfil-form">
+
+                    <div class="form-group-perfil">
+                        <label class="form-label-perfil" for="nombre">
+                            Nombre Completo
+                        </label>
+                        <input type="text"
+                               id="nombre"
+                               name="nombre_completo"
+                               class="form-input-perfil"
+                               th:value="${usuario != null ? usuario.nombre_completo : ''}"
+                               disabled required>
+                    </div>
+
+                    <div class="form-group-perfil">
+                        <label class="form-label-perfil" for="email">Email</label>
+                        <input type="email"
+                               id="email"
+                               class="form-input-perfil readonly"
+                               th:value="${usuario != null ? usuario.correo : ''}"
+                               readonly disabled>
+                        <small style="color:#64748b;font-size:0.85rem;">
+                            El email no puede ser modificado
+                        </small>
+                    </div>
+
+                    <div class="form-group-perfil">
+                        <label class="form-label-perfil" for="telefono">Teléfono</label>
+                        <input type="tel"
+                               id="telefono"
+                               name="movil"
+                               class="form-input-perfil"
+                               th:value="${usuario != null ? usuario.movil : ''}"
+                               disabled required>
+                    </div>
+
+                    <div class="form-actions-perfil" style="display:flex; justify-content:flex-start;">
+
+				    <!-- Botón Editar (VISIBLE por defecto) -->
+				    <button type="button"
+				            id="btnEditar"
+				            class="btn-editar"
+				            onclick="activarEdicion()"
+				            style="display:inline-flex;align-items:center;gap:6px;">
+				        <span class="material-symbols-outlined" style="line-height:1;">
+				            edit
+				        </span>
+				        Editar Perfil
+				    </button>
+				
+				    <!-- Botones Guardar / Cancelar (OCULTOS por defecto) -->
+				    <div id="botonesEdicion"
+				         class="hidden"
+				         style="display:none; gap:1rem;">
+				
+				        <button type="button"
+				                class="btn-cancelar-edicion"
+				                onclick="cancelarEdicion()"
+				                style="display:inline-flex;align-items:center;gap:6px;">
+				            <span class="material-symbols-outlined" style="line-height:1;">
+				                close
+				            </span>
+				            Cancelar
+				        </button>
+				
+				        <button type="submit"
+				                class="btn-guardar"
+				                style="display:inline-flex;align-items:center;gap:6px;">
+				            <span class="material-symbols-outlined" style="line-height:1;">
+				                check
+				            </span>
+				            Guardar Cambios
+				        </button>
+				    </div>
+				
+				</div>
+
+                </form>
+            </div>
+
+            <!-- Seguridad -->
+            <div class="perfil-section">
+                <h2 class="section-title"
+                    style="display:flex;align-items:center;gap:8px;">
+                    <span class="material-symbols-outlined" style="line-height:1;">
+                        lock
+                    </span>
+                    Seguridad
+                </h2>
+
+                <div class="seguridad-actions">
+                    <a th:href="@{/cliente-cambiar-password}"
+                       class="btn-cambiar-password"
+                       style="display:inline-flex;align-items:center;gap:6px;">
+                        <span class="material-symbols-outlined"
+                              style="line-height:1;">key</span>
+                        Cambiar Contraseña
+                    </a>
+                </div>
+
+                <div class="info-box"
+                     style="display:flex;align-items:flex-start;gap:8px;">
+                    <span class="material-symbols-outlined"
+                          style="line-height:1;">warning</span>
+                    <p>
+                        Se enviará un código de verificación a tu correo electrónico
+                        para confirmar el cambio de contraseña.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    let datosOriginales = {
+        nombre: document.getElementById('nombre').value,
+        telefono: document.getElementById('telefono').value
+    };
+
+    function toggleDropdown() {
+        document.getElementById('userDropdown').classList.toggle('active');
+    }
+
+    document.addEventListener('click', function (event) {
+        const dropdown = document.getElementById('userDropdown');
+        if (!dropdown.contains(event.target)) {
+            dropdown.classList.remove('active');
+        }
+    });
+
+    function activarEdicion() {
+        document.getElementById('nombre').disabled = false;
+        document.getElementById('telefono').disabled = false;
+
+        datosOriginales.nombre = document.getElementById('nombre').value;
+        datosOriginales.telefono = document.getElementById('telefono').value;
+
+        document.getElementById('btnEditar').style.display = 'none';
+        document.getElementById('botonesEdicion').style.display = 'flex';
+
+        document.getElementById('nombre').focus();
+    }
+
+    function cancelarEdicion() {
+        document.getElementById('nombre').value = datosOriginales.nombre;
+        document.getElementById('telefono').value = datosOriginales.telefono;
+
+        document.getElementById('nombre').disabled = true;
+        document.getElementById('telefono').disabled = true;
+
+        document.getElementById('btnEditar').style.display = 'inline-flex';
+        document.getElementById('botonesEdicion').style.display = 'none';
+    }
+</script>
+
+</body>
+</html>

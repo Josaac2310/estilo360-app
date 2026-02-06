@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nueva Cita - Estilo360</title>
+    <link rel="stylesheet" th:href="@{/css/citas.css}">
+    <link rel="stylesheet" th:href="@{/css/cliente-nuevacita.css}">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+</head>
+<body>
+    <!-- Header (igual que el dashboard) -->
+    <header class="header">
+        <div class="header-container">
+            <div class="header-logo">
+                <span class="logo-text">Estilo360</span>
+            </div>
+
+            <div class="header-right">
+                <div class="user-dropdown" id="userDropdown">
+                    <div class="user-dropdown-trigger" onclick="toggleDropdown()" style="display:flex;align-items:center;gap:6px;line-height:1;">
+                        <span th:text="${nombre != null ? nombre : 'Cliente'}">Usuario</span>
+                        <span class="material-symbols-outlined" style="font-size:18px;line-height:1;">expand_more</span>
+                    </div>
+
+                    <div class="user-dropdown-menu">
+                        <div class="dropdown-email" th:text="${usuario != null ? usuario.correo : 'email@example.com'}">
+	                        email@example.com
+	                    </div>
+
+                        <div class="dropdown-separator"></div>
+
+                        <div class="dropdown-options">
+                            <a th:href="@{/cliente-perfil}"
+                               style="
+                                   margin-left:12px;
+                                   display: flex;
+                                   align-items: center;
+                                   gap: 10px;
+                                   line-height: 1;
+                                   text-decoration: none;
+                                   color: inherit;
+                               ">
+                                <span class="material-symbols-outlined"
+                                      style="font-size: 20px; line-height: 1;">
+                                    account_circle
+                                </span>
+                                <span>Perfil</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <a th:href="@{/logout}" class="btn-logout" style="display:flex;align-items:center;gap:6px;line-height:1;">
+                    <span class="material-symbols-outlined">logout</span>
+                    Cerrar Sesión
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="container">
+        	 <div class="vuelta">
+        	
+        		<a th:href="@{/dashboard-cliente}" class="btn-volver"
+		           style="display:inline-flex;align-items:center;gap:6px;">
+		            <span class="material-symbols-outlined" style="line-height:1;">arrow_back</span>
+		            Volver al dashboard
+		        </a>
+		        </div>
+            <!-- Breadcrumb -->
+            <div class="reserva-info">
+		        
+		
+		        <div class="page-header">
+		            <h1>Reservar Nueva Cita</h1>
+		            <p>Completa los siguientes datos para reservar tu cita</p>
+		        </div>
+		    </div>
+
+            <!-- Mensajes de error/éxito -->
+            <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
+            <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+
+            <!-- Formulario de reserva -->
+            <div class="form-container">
+                <form th:action="@{/citas/nueva}" method="post" id="formReserva">
+                    
+                    <!-- Paso 1: Seleccionar Servicio -->
+                    <div class="form-step">
+                        <div class="step-header">
+                            <span class="step-number">1</span>
+                            <div class="step-info">
+                                <h3>Selecciona el servicio</h3>
+                                <p>Elige el servicio que deseas reservar</p>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="servicio_id">
+                                <span class="material-symbols-outlined">content_cut</span>
+                                Servicio
+                            </label>
+                            <select id="servicio_id" name="servicio_id" required>
+                                <option value="">-- Selecciona un servicio --</option>
+                                <option th:each="servicio : ${servicios}" 
+                                        th:value="${servicio.id_servicio}"
+                                        th:text="${servicio.nombre + ' - ' + servicio.precio + '€ (' + servicio.duracion_minutos + ' min)'}">
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-step">
+					    <div class="step-header">
+					        <span class="step-number">2</span>
+					        <div class="step-info">
+					            <h3>Selecciona la fecha</h3>
+					            <p>Elige el día que mejor te convenga</p>
+					        </div>
+					    </div>
+					    <div class="form-group">
+					        <label for="fecha-display">
+					            <span class="material-symbols-outlined">calendar_today</span>
+					            Fecha seleccionada
+					        </label>
+					        <!-- Input visual (solo lectura) -->
+					        <input type="text" 
+					               id="fecha-display" 
+					               placeholder="Haz clic en el calendario para seleccionar" 
+					               readonly>
+					        
+					        <!-- Input oculto que envía el valor al backend -->
+					        <input type="hidden" id="fecha" name="fecha" required>
+					        
+					        <!-- Calendario -->
+					        <div id="calendario-custom" class="calendario-custom"></div>
+					    </div>
+					</div>
+
+                    <div class="form-step">
+                        <div class="step-header">
+                            <span class="step-number">3</span>
+                            <div class="step-info">
+                                <h3>Selecciona el profesional</h3>
+                                <p>Elige tu profesional de confianza</p>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="empleado_id">
+                                <span class="material-symbols-outlined">person</span>
+                                Profesional
+                            </label>
+                            <select id="empleado_id" name="empleado_id" required>
+                                <option value="">-- Selecciona un profesional --</option>
+                                <option th:each="empleado : ${empleados}" 
+                                        th:value="${empleado.id_empleado}"
+                                        th:text="${empleado.nombre_completo + ' - ' + empleado.especialidad}">
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-step">
+                        <div class="step-header">
+                            <span class="step-number">4</span>
+                            <div class="step-info">
+                                <h3>Selecciona la hora</h3>
+                                <p>Elige el horario disponible</p>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="hora">
+                                <span class="material-symbols-outlined">schedule</span>
+                                Hora
+                            </label>
+                            <select id="hora" name="hora" required disabled>
+                                <option value="">-- Primero selecciona empleado y fecha --</option>
+                            </select>
+                        </div>
+                        <div id="loading-horarios" class="loading-message" style="display: none;">
+                            <span class="material-symbols-outlined">progress_activity</span>
+                            Cargando horarios disponibles...
+                        </div>
+                    </div>
+
+                    <!-- Botones -->
+                    <div class="form-actions">
+                        <a th:href="@{/dashboard}" class="btn-secondary">
+                            <span class="material-symbols-outlined">arrow_back</span>
+                            Cancelar
+                        </a>
+                        <button type="submit" class="btn-primary">
+                            <span class="material-symbols-outlined">check</span>
+                            Confirmar Reserva
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script th:inline="javascript">
+    // ===== CALENDARIO PERSONALIZADO =====
+    let fechaSeleccionada = null;
+    let mesActual = new Date().getMonth();
+    let añoActual = new Date().getFullYear();
+
+    const nombresMeses = [
+        'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+        'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+    ];
+
+    const nombresDias = ['Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sá', 'Do'];
+
+    function renderizarCalendario() {
+        const calendarioDiv = document.getElementById('calendario-custom');
+        
+        // Header del calendario
+        const header = `
+            <div class="calendario-header">
+                <span class="calendario-mes">${nombresMeses[mesActual]} ${añoActual}</span>
+                <div class="calendario-nav">
+                    <button type="button" class="calendario-nav-btn" onclick="mesAnterior()">◀</button>
+                    <button type="button" class="calendario-nav-btn" onclick="mesSiguiente()">▶</button>
+                </div>
+            </div>
+        `;
+
+        // Días de la semana
+        const diasSemana = `
+            <div class="calendario-dias-semana">
+                ${nombresDias.map(dia => `<div class="calendario-dia-semana">${dia}</div>`).join('')}
+            </div>
+        `;
+
+        // Calcular días del mes
+        const primerDia = new Date(añoActual, mesActual, 1);
+        const ultimoDia = new Date(añoActual, mesActual + 1, 0);
+        const diasEnMes = ultimoDia.getDate();
+        const diaSemanaInicio = primerDia.getDay() === 0 ? 6 : primerDia.getDay() - 1;
+
+        const hoy = new Date();
+        hoy.setHours(0, 0, 0, 0);
+        
+        const mañana = new Date(hoy);
+        mañana.setDate(mañana.getDate() + 1);
+
+        // Generar días
+        let diasHTML = '<div class="calendario-dias">';
+        
+        // Días vacíos al inicio
+        for (let i = 0; i < diaSemanaInicio; i++) {
+            diasHTML += '<div class="calendario-dia vacio"></div>';
+        }
+
+        // Días del mes
+        for (let dia = 1; dia <= diasEnMes; dia++) {
+            const fechaDia = new Date(añoActual, mesActual, dia);
+            fechaDia.setHours(0, 0, 0, 0);
+            
+            let clases = 'calendario-dia';
+            
+            // Marcar día pasado
+            if (fechaDia < mañana) {
+			    clases += ' pasado';
+			}
+            
+            // Marcar hoy
+            if (fechaDia.getTime() === hoy.getTime()) {
+                clases += ' hoy';
+            }
+            
+            // Marcar día seleccionado
+            if (fechaSeleccionada && 
+                fechaDia.getDate() === fechaSeleccionada.getDate() &&
+                fechaDia.getMonth() === fechaSeleccionada.getMonth() &&
+                fechaDia.getFullYear() === fechaSeleccionada.getFullYear()) {
+                clases += ' seleccionado';
+            }
+
+            const onclick = fechaDia >= hoy ? `onclick="seleccionarFecha(${dia}, ${mesActual}, ${añoActual})"` : '';
+            
+            diasHTML += `<div class="${clases}" ${onclick}>${dia}</div>`;
+        }
+
+        diasHTML += '</div>';
+
+        calendarioDiv.innerHTML = header + diasSemana + diasHTML;
+    }
+
+    function seleccionarFecha(dia, mes, año) {
+        fechaSeleccionada = new Date(año, mes, dia);
+        
+        // Actualizar input visual (dd/mm/yyyy)
+        const diaStr = String(dia).padStart(2, '0');
+        const mesStr = String(mes + 1).padStart(2, '0');
+        document.getElementById('fecha-display').value = `${diaStr}/${mesStr}/${año}`;
+        
+        // Actualizar input oculto (yyyy-mm-dd para el backend)
+        const añoStr = String(año);
+        document.getElementById('fecha').value = `${añoStr}-${mesStr}-${diaStr}`;
+        
+        // Re-renderizar calendario
+        renderizarCalendario();
+        
+        // Cargar horarios si ya hay empleado seleccionado
+        cargarHorarios();
+    }
+
+    function mesAnterior() {
+        mesActual--;
+        if (mesActual < 0) {
+            mesActual = 11;
+            añoActual--;
+        }
+        renderizarCalendario();
+    }
+
+    function mesSiguiente() {
+        mesActual++;
+        if (mesActual > 11) {
+            mesActual = 0;
+            añoActual++;
+        }
+        renderizarCalendario();
+    }
+
+    // ===== CARGAR HORARIOS =====
+    const empleadoSelect = document.getElementById('empleado_id');
+    const fechaInput = document.getElementById('fecha');
+    const horaSelect = document.getElementById('hora');
+    const loadingHorarios = document.getElementById('loading-horarios');
+
+    async function cargarHorarios() {
+        const empleadoId = empleadoSelect.value;
+        const fecha = fechaInput.value;
+
+        if (!empleadoId || !fecha) {
+            horaSelect.disabled = true;
+            horaSelect.innerHTML = '<option value="">-- Primero selecciona empleado y fecha --</option>';
+            return;
+        }
+
+        const [year, month, day] = fecha.split('-');
+        const fechaFormateada = `${day}/${month}/${year}`;
+
+        loadingHorarios.style.display = 'flex';
+        horaSelect.disabled = true;
+        horaSelect.innerHTML = '<option value="">Cargando...</option>';
+
+        try {
+            const response = await fetch(`/citas/horarios-disponibles?empleadoId=${empleadoId}&fecha=${fechaFormateada}`);
+            const horarios = await response.json();
+
+            horaSelect.innerHTML = '';
+
+            if (horarios.length === 0) {
+                horaSelect.innerHTML = '<option value="">No hay horarios disponibles</option>';
+                horaSelect.disabled = true;
+            } else {
+                horaSelect.innerHTML = '<option value="">-- Selecciona una hora --</option>';
+                horarios.forEach(hora => {
+                    const option = document.createElement('option');
+                    option.value = hora;
+                    option.textContent = hora;
+                    horaSelect.appendChild(option);
+                });
+                horaSelect.disabled = false;
+            }
+        } catch (error) {
+            console.error('Error al cargar horarios:', error);
+            horaSelect.innerHTML = '<option value="">Error al cargar horarios</option>';
+            horaSelect.disabled = true;
+        } finally {
+            loadingHorarios.style.display = 'none';
+        }
+    }
+
+    empleadoSelect.addEventListener('change', cargarHorarios);
+
+    // ===== DROPDOWN =====
+    function toggleDropdown() {
+        const dropdown = document.getElementById('userDropdown');
+        dropdown.classList.toggle('active');
+    }
+
+    document.addEventListener('click', function(event) {
+        const dropdown = document.getElementById('userDropdown');
+        if (!dropdown.contains(event.target)) {
+            dropdown.classList.remove('active');
+        }
+    });
+
+    // ===== INICIALIZAR CALENDARIO =====
+    document.addEventListener('DOMContentLoaded', renderizarCalendario);
+</script>
+</body>
+</html>

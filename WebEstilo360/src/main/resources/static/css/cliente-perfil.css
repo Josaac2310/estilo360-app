@@ -1,0 +1,288 @@
+/* Página de Perfil del Cliente - Estilos */
+
+/* Contenedor principal del perfil */
+.perfil-container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+/* Card del perfil */
+.perfil-card {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 8px 25px rgba(30, 64, 175, 0.1);
+    overflow: hidden;
+    animation: fadeIn 0.5s ease;
+}
+
+/* Header del perfil */
+.perfil-header {
+    background: linear-gradient(135deg, #2563eb, #1e40af);
+    padding: 2rem;
+    text-align: center;
+    color: white;
+}
+
+.perfil-avatar {
+    width: 100px;
+    height: 100px;
+    background: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+    font-size: 3rem;
+}
+
+.perfil-nombre {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 0.3rem;
+}
+
+.perfil-email {
+    font-size: 0.95rem;
+    opacity: 0.9;
+}
+
+/* Secciones del perfil */
+.perfil-section {
+    padding: 2rem;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.perfil-section:last-child {
+    border-bottom: none;
+}
+
+.section-title {
+    font-size: 1.3rem;
+    color: #1e40af;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.section-icon {
+    font-size: 1.5rem;
+}
+
+/* Formulario */
+.perfil-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.form-group-perfil {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-label-perfil {
+    font-size: 0.9rem;
+    color: #64748b;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.form-input-perfil {
+    padding: 0.9rem 1.2rem;
+    border: 2px solid #e2e8f0;
+    border-radius: 10px;
+    font-size: 1rem;
+    transition: all 0.2s ease;
+    background: #f8fafc;
+}
+
+.form-input-perfil:focus {
+    outline: none;
+    border-color: #2563eb;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.form-input-perfil:disabled {
+    background: #f1f5f9;
+    color: #94a3b8;
+    cursor: not-allowed;
+    border-color: #e2e8f0;
+}
+
+.form-input-perfil.readonly {
+    background: #f8fafc;
+    color: #64748b;
+    cursor: default;
+    border-color: #e2e8f0;
+}
+
+/* Botones del formulario */
+.form-actions-perfil {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    padding-top: 1rem;
+}
+
+.btn-editar {
+    background: #2563eb;
+    color: white;
+    padding: 0.8rem 1.5rem;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-editar:hover {
+    background: #1e40af;
+    transform: translateY(-1px);
+}
+
+.btn-guardar {
+    background: #10b981;
+    color: white;
+    padding: 0.8rem 1.5rem;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-guardar:hover {
+    background: #059669;
+    transform: translateY(-1px);
+}
+
+.btn-cancelar-edicion {
+    background: #f1f5f9;
+    color: #475569;
+    padding: 0.8rem 1.5rem;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    border: 1px solid #e2e8f0;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-cancelar-edicion:hover {
+    background: #e2e8f0;
+}
+
+/* Sección de seguridad */
+.seguridad-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.btn-cambiar-password {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    color: white;
+    padding: 1rem 1.5rem;
+    border-radius: 10px;
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 600;
+    text-align: center;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.8rem;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-cambiar-password:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+}
+
+/* Info adicional */
+.info-box {
+    background: #eff6ff;
+    border-left: 4px solid #2563eb;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-top: 1rem;
+}
+
+.info-box p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #1e40af;
+}
+
+/* Estados ocultos */
+.hidden {
+    display: none;
+}
+
+/* Botón volver */
+.btn-volver {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: #f1f5f9;
+    color: #475569;
+    padding: 0.7rem 1.5rem;
+    border-radius: 10px;
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    border: 1px solid #e2e8f0;
+    margin-bottom: 1rem;
+}
+
+.btn-volver:hover {
+    background: #e2e8f0;
+    transform: translateX(-4px);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .perfil-header {
+        padding: 1.5rem;
+    }
+
+    .perfil-nombre {
+        font-size: 1.5rem;
+    }
+
+    .perfil-section {
+        padding: 1.5rem;
+    }
+
+    .form-actions-perfil {
+        flex-direction: column;
+    }
+
+    .btn-editar,
+    .btn-guardar,
+    .btn-cancelar-edicion {
+        width: 100%;
+    }
+}
+
+@media (max-width: 640px) {
+    .perfil-avatar {
+        width: 80px;
+        height: 80px;
+        font-size: 2.5rem;
+    }
+
+    .section-title {
+        font-size: 1.1rem;
+    }
+}

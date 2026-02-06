@@ -1,0 +1,5 @@
+[2026-02-06 13:16:31] [INFO ] [c.W.W.controller.AuthController] - Intento de login - Usuario: josecarlos.sanchoac@gmail.com
+[2026-02-06 13:16:31] [INFO ] [c.W.W.controller.AuthController] - Login exitoso - Usuario: josecarlos.sanchoac@gmail.com, Rol: cliente
+[2026-02-06 13:16:31] [INFO ] [c.W.W.controller.DashboardController] - Acceso a dashboard Cliente - Usuario: Jose Carlos Cliente 
+[2026-02-06 14:04:40] [INFO ] [c.W.W.controller.DashboardController] - Cita creada correctamente para Usuario : Jose Carlos Cliente 
+[2026-02-06 14:04:40] [INFO ] [c.W.W.controller.DashboardController] - Acceso a dashboard Cliente - Usuario: Jose Carlos Cliente 

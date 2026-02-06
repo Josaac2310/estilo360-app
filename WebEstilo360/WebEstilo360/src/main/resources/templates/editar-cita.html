@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Cita - Estilo360</title>
+
+    <!-- Google Material Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+
+    <link rel="stylesheet" th:href="@{/css/citas.css}">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-container">
+            <div class="header-logo icon-text">
+                <span>Estilo360</span>
+            </div>
+            <div class="header-right">
+                <div class="user-info">
+                    <span class="user-label">Admin:</span>
+                    <span class="user-name" th:text="${nombre}">Usuario</span>
+                </div>
+                 <a th:href="@{/logout}" class="btn-logout">
+				    <span style="position: relative; bottom: 5px; right: 4px; ">Cerrar Sesión</span>
+				    <span class="material-symbols-outlined" style="font-size:20px;">logout</span>
+				</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            
+            <!-- Breadcrumb -->
+            <div class="breadcrumb">
+			    <a th:href="@{/dashboard}" style="display:flex; align-items:center; gap:4px;">
+			        <span class="material-symbols-outlined" style="font-size:20px;">home</span>
+			        <span style="position:relative; top:0px;">Dashboard</span>
+			    </a>
+			    <span>›</span>
+			
+			    <a th:href="@{/citas}" style="display:flex; align-items:center; gap:4px;">
+			        <span class="material-symbols-outlined" style="font-size:20px;">event</span>
+			        <span>Citas</span>
+			    </a>
+			    <span>›</span>
+			
+			    <span style="display:flex; align-items:center; gap:4px;">
+			        <span class="material-symbols-outlined" style="font-size:20px;">edit</span>
+			        <span>Editar Cita</span>
+			    </span>
+			</div>
+            <!-- Form Container -->
+            <div class="form-container">
+                <div class="form-header icon-text">
+                   <div style="display:flex; align-items:center; justify-content:center; gap:8px; ">
+					    <span class="material-symbols-outlined">edit</span>
+					    <h1 style="margin:0;">Editar Cita</h1>
+					</div>
+                    <p>Modifica los datos de la cita</p>
+                </div>
+                
+
+                <!-- Información del ID -->
+                <div class="info-card">
+                    <div class="info-item">
+                        <span class="info-label">ID de la Cita:</span>
+                        <span class="info-value" th:text="${cita.id_cita}">1</span>
+                    </div>
+                </div>
+
+                <!-- Alertas -->
+                <div th:if="${error}" class="alert alert-error icon-text">
+                    <span class="material-symbols-outlined">error</span>
+                    <span th:text="${error}"></span>
+                </div>
+
+                <!-- Formulario -->
+                <form th:action="@{/citas/editar/{id}(id=${cita.id_cita})}" method="post" th:object="${cita}">
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Cliente *</label>
+                            <select th:field="*{usuario_id}" required>
+                                <option value="">Selecciona un cliente</option>
+                                <option 
+                                    th:each="usuario : ${usuarios}" 
+                                    th:value="${usuario.id_usuario}"
+                                    th:text="${usuario.nombre_completo}"
+                                    th:selected="${usuario.id_usuario == cita.usuario_id}">
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Empleado *</label>
+                            <select th:field="*{empleado_id}" required>
+                                <option value="">Selecciona un empleado</option>
+                                <option 
+                                    th:each="empleado : ${empleados}" 
+                                    th:value="${empleado.id_empleado}"
+                                    th:text="${empleado.nombre_completo}"
+                                    th:selected="${empleado.id_empleado == cita.empleado_id}">
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Fecha *</label>
+                            <input type="text"
+                                   th:field="*{fecha}"
+                                   placeholder="dd/MM/yyyy (ej: 25/12/2024)"
+                                   pattern="\d{2}/\d{2}/\d{4}"
+                                   required>
+                            <small>Formato: dd/MM/yyyy</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Hora *</label>
+                            <input type="text"
+                                   th:field="*{hora}"
+                                   placeholder="HH:mm (ej: 10:00)"
+                                   pattern="\d{2}:\d{2}"
+                                   required>
+                            <small>Formato: HH:mm</small>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Servicio *</label>
+                        <select th:field="*{servicio_id}" required>
+                            <option value="">Selecciona un servicio</option>
+                            <option 
+                                th:each="servicio : ${servicios}" 
+                                th:value="${servicio.id_servicio}"
+                                th:text="${servicio.nombre + ' - ' + servicio.precio + '€'}"
+                                th:selected="${servicio.id_servicio == cita.servicio_id}">
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="form-actions">
+                        <a th:href="@{/citas}" class="btn-secondary icon-text">
+                            <span>Cancelar</span>
+                        </a>
+                        <button type="submit" class="btn-primary">
+						    <span style="display:flex; align-items:center; justify-content:center; gap:6px;">
+						        <span style="position:relative; bottom: 1px;">Guardar Cambios</span>
+						        <span class="material-symbols-outlined">check</span>
+						    </span>
+						</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <!-- Alineación icono + texto -->
+    
+</body>
+</html>

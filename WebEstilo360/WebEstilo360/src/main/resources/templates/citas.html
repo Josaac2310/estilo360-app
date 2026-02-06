@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Citas - Estilo360</title>
+
+	<link rel="stylesheet" th:href="@{/css/citas.css}">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+</head>
+<body>
+<header class="header">
+        <div class="header-container">
+            <div class="header-logo">
+                <span>Estilo360</span>
+            </div>
+            <div class="header-right">
+                <div class="user-info">
+                    <span class="user-label">Admin:</span>
+                    <span class="user-name" th:text="${nombre}">Usuario</span>
+                </div>
+                <a th:href="@{/logout}" class="btn-logout">
+                    <span style="position: relative; bottom: 5px; right: 4px;">Cerrar Sesión</span>
+                    <span class="material-symbols-outlined" style="font-size:20px;">logout</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+<main class="main-content">
+    <div class="container">
+
+        <div class="breadcrumb">
+		    <a th:href="@{/dashboard}" style="display:flex; align-items:center; gap:4px;">
+		        <span class="material-symbols-outlined" style="font-size:20px;">home</span>
+		        <span style="position:relative; top:0px;">Dashboard</span>
+		    </a>
+		    <span>›</span>
+		    <span style="display:flex; align-items:center; gap:4px;">
+		        <span class="material-symbols-outlined" style="font-size:20px;">event</span>
+		        <span>Citas</span>
+		    </span>
+		</div>
+
+
+        <div class="page-header">
+            <div>
+                <h1>Gestión de Citas</h1>
+                <p>Administra las citas realizadas por los clientes</p>
+            </div>
+        </div>
+
+        <div th:if="${success}" class="alert alert-success">
+            <span class="material-symbols-outlined">check_circle</span>
+            <span th:text="${success}"></span>
+        </div>
+
+        <div th:if="${error}" class="alert alert-error">
+            <span class="material-symbols-outlined">error</span>
+            <span th:text="${error}"></span>
+        </div>
+
+        <div class="table-container">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Cliente</th>
+                    <th>Empleado</th>
+                    <th>Servicio</th>
+                    <th>Fecha</th>
+                    <th>Hora</th>
+                    <th>Acciones</th>
+                </tr>
+                </thead>
+                <tbody>
+
+                <tr th:if="${#lists.isEmpty(citas)}">
+                    <td colspan="9" class="empty-message">
+                        <span class="material-symbols-outlined">event</span>
+                        No hay citas registradas
+                    </td>
+                </tr>
+
+                <tr th:each="cita : ${citas}">
+                    <td th:text="${cita.id_cita}">1</td>
+                    <td th:text="${cita.nombreUsuario}">Cliente</td>
+                    <td th:text="${cita.nombreEmpleado}">Empleado</td>
+                    <td th:text="${cita.nombreServicio}">Servicio</td>
+                    <td th:text="${cita.fecha}">25/12/2024</td>
+                    <td th:text="${cita.hora}">10:00</td>
+                    <td class="actions">
+                        <a th:href="@{/citas/editar/{id}(id=${cita.id_cita})}"
+                           class="btn-edit"
+                           title="Editar cita">
+                            <span class="material-symbols-outlined">edit</span>
+                        </a>
+                        <button class="btn-delete"
+                                th:onclick="'abrirModalEliminar(' + ${cita.id_cita} + ')'"
+                                title="Eliminar cita">
+                            <span class="material-symbols-outlined">delete</span>
+                        </button>
+                    </td>
+                </tr>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+
+<div id="modalEliminar" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 style="display:flex; align-items:center; gap:6px;">
+			    <span class="material-symbols-outlined">warning</span>
+			    <span style="position:relative; ">Confirmar Eliminación</span>
+			</h2>
+        </div>
+        <div class="modal-body">
+            <p>¿Estás seguro de que deseas eliminar esta cita?</p>
+            <p class="modal-warning">Esta acción no se puede deshacer.</p>
+        </div>
+        <div class="modal-footer">
+            <button onclick="cerrarModal()" class="btn-secondary">
+                Cancelar
+            </button>
+            <form id="formEliminar" method="post" style="display: inline;">
+                <button type="submit" class="btn-danger" style="display:flex; align-items:center; gap:6px;">
+				    <span class="material-symbols-outlined">delete</span>
+				    <span style="position:relative; top:2px;">Eliminar</span>
+				</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    function abrirModalEliminar(id) {
+        document.getElementById('formEliminar').action = '/citas/eliminar/' + id;
+        document.getElementById('modalEliminar').style.display = 'flex';
+    }
+
+    function cerrarModal() {
+        document.getElementById('modalEliminar').style.display = 'none';
+    }
+
+    window.onclick = function (event) {
+        const modal = document.getElementById('modalEliminar');
+        if (event.target === modal) cerrarModal();
+    }
+</script>
+
+</body>
+</html>

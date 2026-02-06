@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Empleados - Estilo360</title>
+
+    <link rel="stylesheet" th:href="@{/css/empleados.css}">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+</head>
+<body>
+
+<!-- Header -->
+<header class="header">
+    <div class="header-container">
+
+        <div class="header-logo"
+             style="display:flex; align-items:center; gap:6px;">
+            <span>Estilo360</span>
+        </div>
+
+        <div class="header-right">
+
+            <div class="user-info">
+                    <span class="user-label">Admin:</span>
+                    <span class="user-name" th:text="${nombre}">Usuario</span>
+                </div>
+
+            <a th:href="@{/logout}" class="btn-logout"
+               style="display:flex; align-items:center; gap:6px;">
+                <span class="material-symbols-outlined" style="line-height:1;">logout</span>
+                <span>Cerrar Sesión</span>
+            </a>
+
+        </div>
+    </div>
+</header>
+
+<!-- Main Content -->
+<main class="main-content">
+    <div class="container">
+
+        <!-- Breadcrumb -->
+        <div class="breadcrumb"
+             style="display:flex; align-items:center; gap:6px;">
+
+            <a th:href="@{/dashboard}"
+               style="display:flex; align-items:center; gap:4px;">
+                <span class="material-symbols-outlined" style="line-height:1;">home</span>
+                <span>Dashboard</span>
+            </a>
+
+            <span>›</span>
+            <span class="material-symbols-outlined" style="line-height:1;">
+                    person
+                </span>
+                <span>Empleados</span>
+        </div>
+
+        <!-- Header Section -->
+        <div class="page-header">
+            <div>
+                <h1>Gestión de Empleados</h1>
+                <p>Administra el equipo de profesionales</p>
+            </div>
+
+            <a th:href="@{/empleados/nuevo}" class="btn-primary"
+               style="display:flex; align-items:center; gap:6px;">
+                <span class="material-symbols-outlined" style="line-height:1;">person_add</span>
+                <span>Nuevo Empleado</span>
+            </a>
+        </div>
+
+        <!-- Alertas -->
+        <div th:if="${success}" class="alert alert-success"
+             style="display:flex; align-items:center; gap:6px;">
+            <span class="material-symbols-outlined" style="line-height:1;">check_circle</span>
+            <span th:text="${success}"></span>
+        </div>
+
+        <div th:if="${error}" class="alert alert-error"
+             style="display:flex; align-items:center; gap:6px;">
+            <span class="material-symbols-outlined" style="line-height:1;">error</span>
+            <span th:text="${error}"></span>
+        </div>
+
+        <!-- Tabla de Empleados -->
+        <div class="table-container">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Nombre Completo</th>
+                    <th>Especialidad</th>
+                    <th>Correo</th>
+                    <th>Móvil</th>
+                    <th>Acciones</th>
+                </tr>
+                </thead>
+
+                <tbody>
+
+                <tr th:if="${#lists.isEmpty(empleados)}">
+                    <td colspan="6" class="empty-message"
+                        style="display:flex; align-items:center; justify-content:center; gap:6px;">
+                        <span class="material-symbols-outlined" style="line-height:1;">badge</span>
+                        <span>No hay empleados registrados</span>
+                    </td>
+                </tr>
+
+                <tr th:each="empleado : ${empleados}">
+                    <td th:text="${empleado.id_empleado}">1</td>
+                    <td th:text="${empleado.nombre_completo}">María López</td>
+                    <td>
+                        <span class="especialidad-badge"
+                              th:text="${empleado.especialidad}">
+                            Estilista
+                        </span>
+                    </td>
+                    <td th:text="${empleado.correo}">maria@estilo360.com</td>
+                    <td th:text="${empleado.movil}">699888777</td>
+
+                    <td class="actions"
+                        style="display:flex; align-items:center; gap:6px;">
+
+                        <a th:href="@{/empleados/editar/{id}(id=${empleado.id_empleado})}"
+                           class="btn-edit"
+                           title="Editar empleado"
+                           style="display:flex; align-items:center;">
+                            <span class="material-symbols-outlined" style="line-height:1;">edit</span>
+                        </a>
+
+                        <button type="button"
+                                class="btn-delete btn-delete-empleado"
+                                th:attr="data-id=${empleado.id_empleado},data-nombre=${empleado.nombre_completo}"
+                                title="Eliminar empleado"
+                                style="display:flex; align-items:center;">
+                            <span class="material-symbols-outlined" style="line-height:1;">delete</span>
+                        </button>
+
+                    </td>
+                </tr>
+
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</main>
+
+<!-- Modal de Confirmación -->
+<div id="modalEliminar" class="modal">
+    <div class="modal-content">
+
+        <div class="modal-header">
+            <h2 style="display:flex; align-items:center; gap: 60px;">
+			    <span class="material-symbols-outlined">warning</span>
+			    <span style="position:relative; ">Confirmar Eliminación</span>
+			</h2>
+        </div>
+
+        <div class="modal-body">
+            <p>¿Estás seguro de que deseas eliminar al empleado:</p>
+            <p class="modal-item-name" id="nombreEmpleado"></p>
+            <p class="modal-warning">Esta acción no se puede deshacer.</p>
+        </div>
+
+        <div class="modal-footer">
+            <button type="button" onclick="cerrarModal()" class="btn-secondary">
+                Cancelar
+            </button>
+
+            <form id="formEliminar" method="post" style="display:inline;">
+                <button type="submit" class="btn-danger"
+                        style="display:flex; align-items:center; gap:6px;">
+                    <span class="material-symbols-outlined" style="line-height:1;">delete_forever</span>
+                    <span>Eliminar</span>
+                </button>
+            </form>
+        </div>
+
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const botonesEliminar = document.querySelectorAll('.btn-delete-empleado');
+    botonesEliminar.forEach(function(boton) {
+        boton.addEventListener('click', function() {
+            const id = this.getAttribute('data-id');
+            const nombre = this.getAttribute('data-nombre');
+            abrirModalEliminar(id, nombre);
+        });
+    });
+});
+
+function abrirModalEliminar(id, nombre) {
+    document.getElementById('formEliminar').action = '/empleados/eliminar/' + id;
+    document.getElementById('nombreEmpleado').textContent = nombre;
+    document.getElementById('modalEliminar').style.display = 'flex';
+}
+
+function cerrarModal() {
+    document.getElementById('modalEliminar').style.display = 'none';
+}
+
+window.onclick = function(event) {
+    const modal = document.getElementById('modalEliminar');
+    if (event.target === modal) cerrarModal();
+}
+</script>
+
+</body>
+</html>

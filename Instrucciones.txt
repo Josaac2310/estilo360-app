@@ -1,0 +1,27 @@
+
+git clone https://github.com/Josaac2310/estilo360-app.git
+
+
+Compilar (necesitas Maven instalado) y levantar Docker 
+   cd estilo360
+   mvn clean package
+levantar Docker 
+   docker-compose up -d
+   cd ../WebEstilo360
+   mvn clean package
+   cd ..
+
+Ejecutar los jar el los directorios raíz de cada proyecto
+   java -jar target/estilo360-0.0.1-SNAPSHOT.jar
+  java -jar target/WebEstilo360-0.0.1-SNAPSHOT.jar
+
+
+
+
+si ya hay jar
+Después de clonar el repositorio, ir a la carpeta backend (estilo360) y ejecutar el jar 
+   java -jar target\estilo360-0.0.1-SNAPSHOT.jar
+
+Ir a la caprta frontend y ejecutar el jar 
+   java -jar target\WebEstilo360-0.0.1-SNAPSHOT.jar
+

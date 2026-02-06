@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Dashboard - Estilo360</title>
+    <!-- CSS principal (styles.css) -->
+    <link rel="stylesheet" th:href="@{/css/citas.css}">
+    <!-- CSS específico del dashboard cliente -->
+    <link rel="stylesheet" th:href="@{/css/dashboard-cliente.css}">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+    
+</head>
+<body>
+    <!-- Header (usa los estilos de styles.css) -->
+    <header class="header">
+	    <div class="header-container">
+	        <div class="header-logo">
+	            <span class="logo-text">Estilo360</span>
+	        </div>
+	
+	        <div class="header-right">
+	            <div class="user-dropdown" id="userDropdown">
+	                <div class="user-dropdown-trigger" onclick="toggleDropdown()" style="display:flex;align-items:center;gap:6px;line-height:1;">
+	                    <span th:text="${usuario != null ? usuario.nombre_completo : 'Cliente'}">Usuario</span>
+	                    <span class="material-symbols-outlined" style="font-size:18px;line-height:1;">expand_more</span>
+	                </div>
+	
+	                <div class="user-dropdown-menu">
+	                    <div class="dropdown-email" th:text="${usuario != null ? usuario.correo : 'email@example.com'}">
+	                        email@example.com
+	                    </div>
+	
+	                    <div class="dropdown-separator"></div>
+	
+	                    <div class="dropdown-options">
+						    <a th:href="@{/cliente-perfil}"
+						       style="
+						       		margin-left:12px;
+						           display: flex;
+						           align-items: center;
+						           gap: 10px;
+						           line-height: 1;
+						           text-decoration: none;
+						           color: inherit;
+						       ">
+						        <span class="material-symbols-outlined"
+						              style="font-size: 20px; line-height: 1;">
+						            account_circle
+						        </span>
+						        <span>Perfil</span>
+						    </a>
+						</div>
+
+	                </div>
+	            </div>
+	
+	            <a th:href="@{/logout}" class="btn-logout" style="display:flex;align-items:center;gap:6px;line-height:1;">
+	                <span class="material-symbols-outlined">logout</span>
+	                Cerrar Sesión
+	            </a>
+	        </div>
+	    </div>
+	</header>	
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="container">
+            <!-- Bienvenida personalizada CON botón reservar -->
+            <div class="welcome-section">
+			    <div class="welcome-text">
+			        <h2>¡Hola, <span th:text="${usuario != null ? usuario.nombre_completo.split(' ')[0] : 'Cliente'}">Usuario</span>!</h2>
+			        <p>Gestiona tus citas de forma rápida y sencilla</p>
+			    </div>
+			
+			    <div class="welcome-logo-wrapper">
+			        <img th:src="@{/images/logoEstilo360Rec.png}" alt="Logo" class="welcome-logo-bg">
+			    </div>
+			
+			    <div class="welcome-button">
+			        <a href="/citas/nueva" class="btn-reservar-grande">
+			            <span class="material-symbols-outlined">add</span>
+			            Reservar nueva cita
+			        </a>
+			    </div>
+			</div>
+
+
+
+            <!-- Alertas -->
+            <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+            <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
+
+         
+            <!-- Grid de contenido principal -->
+            <div class="content-grid">
+                <!-- Columna izquierda: Próxima cita -->
+                <div class="main-column">
+                    <div class="proxima-cita-card">
+                        <div class="card-header" style="display:flex;align-items:center;gap:8px;line-height:1;">
+	                        <span class="material-symbols-outlined">event</span>
+	                        <h3>Próxima Cita</h3>
+	                    </div>
+
+                        <!-- Si tiene próxima cita -->
+                        <div th:if="${proximaCita != null}">
+                            <div class="cita-info">
+                                <div class="cita-detail">
+	                                <span class="cita-label" style="display:flex;align-items:center;gap:6px;line-height:1;">
+	                                    <span class="material-symbols-outlined">calendar_month</span> Fecha
+	                                </span>
+	                                <span class="cita-value" th:text="${proximaCita.fecha}"></span>
+	                            </div>
+                                <div class="cita-detail">
+	                                <span class="cita-label" style="display:flex;align-items:center;gap:6px;line-height:1;">
+	                                    <span class="material-symbols-outlined">schedule</span> Hora
+	                                </span>
+	                                <span class="cita-value" th:text="${proximaCita.hora}"></span>
+	                            </div>
+
+                                <div class="cita-detail">
+	                                <span class="cita-label" style="display:flex;align-items:center;gap:6px;line-height:1;">
+	                                    <span class="material-symbols-outlined">content_cut</span> Servicio
+	                                </span>
+	                                <span class="cita-value" th:text="${proximaCita.nombreServicio ?: 'Servicio'}"></span>
+	                            </div>
+                                <div class="cita-detail">
+	                                <span class="cita-label" style="display:flex;align-items:center;gap:6px;line-height:1;">
+	                                    <span class="material-symbols-outlined">badge</span> Empleado
+	                                </span>
+	                                <span class="cita-value" th:text="${proximaCita.nombreEmpleado ?: 'Empleado'}"></span>
+	                            </div>
+                            </div>
+
+                            <div class="cita-actions">
+	                            <span class="material-symbols-outlined"
+							          style="font-size:20px;line-height:1;">
+							        info
+							    </span>
+							
+							    <span>
+							        Recuerda llegar <strong>5 minutos antes</strong> de tu cita.
+							    </span>
+                        	</div>
+                        </div>
+
+                        <!-- Si NO tiene próxima cita -->
+                        <div th:if="${proximaCita == null}" class="no-cita" style="text-align:center;">
+    
+						    <div class="no-cita-icon">
+						        <span class="material-symbols-outlined"
+						              style="font-size:48px; color:#555;">
+						            calendar_month
+						        </span>
+						    </div>
+						
+						    <p>No tienes citas programadas</p>
+						
+						</div>
+                    </div>
+
+                    <!-- Acciones rápidas -->
+                    <div class="quick-actions-card">
+	                    <h3 style="display:flex;align-items:center;gap:6px;line-height:1;">
+	                        <span class="material-symbols-outlined">bolt</span> Acciones Rápidas
+	                    </h3>
+	
+	                    <div class="quick-actions-list">
+							<a th:href="@{/cliente-citas}" class="quick-action-btn">
+	                            <span class="material-symbols-outlined">event_note</span>
+	                            <span>Mis citas</span>
+	                        </a>
+	
+	                       <a th:href="@{/cliente-servicios}" class="quick-action-btn">
+							    <span class="material-symbols-outlined">content_cut</span>
+							    <span>Servicios</span>
+							</a>
+
+								
+	                        <a th:href="@{/cliente-perfil}"perfil class="quick-action-btn">
+	                            <span class="material-symbols-outlined">account_circle</span>
+	                            <span>Perfil</span>
+	                        </a>
+	                    </div>
+	                </div>
+	            </div>
+
+                <!-- Columna derecha: Calendario -->
+                <div class="sidebar-column">
+                    <!-- Calendario -->
+                    <div class="calendar-card">
+                        <div class="calendar-header">
+                            <span class="calendar-month" id="calendarMonth">Enero 2025</span>
+                            <div class="calendar-nav">
+                                <button class="calendar-nav-btn" onclick="previousMonth()">◀</button>
+                                <button class="calendar-nav-btn" onclick="nextMonth()">▶</button>
+                            </div>
+                        </div>
+
+                        <div class="calendar-weekdays">
+                            <div class="calendar-weekday">Lu</div>
+                            <div class="calendar-weekday">Ma</div>
+                            <div class="calendar-weekday">Mi</div>
+                            <div class="calendar-weekday">Ju</div>
+                            <div class="calendar-weekday">Vi</div>
+                            <div class="calendar-weekday">Sá</div>
+                            <div class="calendar-weekday">Do</div>
+                        </div>
+
+                        <div class="calendar-days" id="calendarDays">
+                            <!-- Los días se generan con JavaScript -->
+                        </div>
+
+                        <div class="calendar-legend">
+                            <div class="legend-item">
+                                <div class="legend-color today"></div>
+                                <span>Hoy</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color has-cita"></div>
+                                <span>Con cita</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script th:inline="javascript">
+        // Datos de citas desde Thymeleaf
+        /*<![CDATA[*/
+        const citasData = /*[[${todasCitas}]]*/ [];
+        const proximaCitaData = /*[[${proximaCita}]]*/ null;
+        /*]]>*/
+
+        // Extraer fechas con citas (formato dd/MM/yyyy)
+        const fechasConCitas = new Set();
+        
+        if (citasData && citasData.length > 0) {
+            citasData.forEach(cita => {
+                if (cita.fecha) {
+                    fechasConCitas.add(cita.fecha);
+                }
+            });
+        }
+        
+        if (proximaCitaData && proximaCitaData.fecha) {
+            fechasConCitas.add(proximaCitaData.fecha);
+        }
+
+        // Variables del calendario
+        let currentDate = new Date();
+        let currentMonth = currentDate.getMonth();
+        let currentYear = currentDate.getFullYear();
+
+        const monthNames = [
+            'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+            'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+        ];
+
+        function renderCalendar() {
+            const firstDay = new Date(currentYear, currentMonth, 1);
+            const lastDay = new Date(currentYear, currentMonth + 1, 0);
+            const daysInMonth = lastDay.getDate();
+            const startingDayOfWeek = firstDay.getDay() === 0 ? 6 : firstDay.getDay() - 1;
+
+            // Actualizar el mes y año
+            document.getElementById('calendarMonth').textContent = 
+                `${monthNames[currentMonth]} ${currentYear}`;
+
+            const calendarDays = document.getElementById('calendarDays');
+            calendarDays.innerHTML = '';
+
+            // Días vacíos al inicio
+            for (let i = 0; i < startingDayOfWeek; i++) {
+                const emptyDay = document.createElement('div');
+                emptyDay.className = 'calendar-day empty';
+                calendarDays.appendChild(emptyDay);
+            }
+
+            // Días del mes
+            const today = new Date();
+            const isCurrentMonth = currentMonth === today.getMonth() && 
+                                   currentYear === today.getFullYear();
+
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dayDiv = document.createElement('div');
+                dayDiv.className = 'calendar-day';
+                dayDiv.textContent = day;
+
+                // Marcar el día actual
+                if (isCurrentMonth && day === today.getDate()) {
+                    dayDiv.classList.add('today');
+                }
+
+                // Marcar días con citas (convertir a formato dd/MM/yyyy)
+                const dayFormatted = String(day).padStart(2, '0');
+                const monthFormatted = String(currentMonth + 1).padStart(2, '0');
+                const dateStr = `${dayFormatted}/${monthFormatted}/${currentYear}`;
+                
+                if (fechasConCitas.has(dateStr)) {
+                    dayDiv.classList.add('has-cita');
+                }
+
+                calendarDays.appendChild(dayDiv);
+            }
+        }
+
+        function previousMonth() {
+            currentMonth--;
+            if (currentMonth < 0) {
+                currentMonth = 11;
+                currentYear--;
+            }
+            renderCalendar();
+        }
+
+        function nextMonth() {
+            currentMonth++;
+            if (currentMonth > 11) {
+                currentMonth = 0;
+                currentYear++;
+            }
+            renderCalendar();
+        }
+
+        // Toggle del dropdown
+        function toggleDropdown() {
+            const dropdown = document.getElementById('userDropdown');
+            dropdown.classList.toggle('active');
+        }
+
+        // Cerrar dropdown al hacer clic fuera
+        document.addEventListener('click', function(event) {
+            const dropdown = document.getElementById('userDropdown');
+            if (!dropdown.contains(event.target)) {
+                dropdown.classList.remove('active');
+            }
+        });
+
+        // Renderizar calendario al cargar la página
+        document.addEventListener('DOMContentLoaded', renderCalendar);
+        
+        if ('scrollRestoration' in history) {
+            history.scrollRestoration = 'manual';
+        }
+
+        window.addEventListener('load', () => {
+            window.scrollTo(0, 0);
+        });
+        console.log("todasCitas:", citasData);
+        console.log("proximaCita:", proximaCitaData);
+
+
+    </script>
+</body>
+</html>

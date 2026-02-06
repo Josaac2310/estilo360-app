@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Citas - Estilo360</title>
+
+    <!-- Material Symbols -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+
+    <link rel="stylesheet" th:href="@{/css/citas.css}">
+    <link rel="stylesheet" th:href="@{/css/dashboard-cliente.css}">
+    <link rel="stylesheet" th:href="@{/css/citas-cliente.css}">
+</head>
+<body>
+
+<header class="header">
+    <div class="header-container">
+        <div class="header-logo">
+            Estilo360
+        </div>
+
+        <div class="header-right">
+            <div class="user-dropdown" id="userDropdown">
+                <div class="user-dropdown-trigger"
+                     onclick="toggleDropdown()"
+                     style="display:flex;align-items:center;gap:6px;cursor:pointer;">
+
+                    <span th:text="${usuario != null ? usuario.nombre_completo : 'Cliente'}"
+                          style="line-height:1;">Usuario</span>
+
+                    <span class="material-symbols-outlined"
+                          style="font-size:20px;line-height:1;">expand_more</span>
+                </div>
+
+                <div class="user-dropdown-menu">
+                    <div class="dropdown-email"
+                         th:text="${usuario != null ? usuario.correo : 'email@example.com'}">
+                        email@example.com
+                    </div>
+
+                    <div class="dropdown-separator"></div>
+
+                    <div class="dropdown-options">
+                        <a th:href="@{/cliente-perfil}" class="dropdown-option">
+                            <span class="material-symbols-outlined">person</span>
+                            <span>Perfil</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <a th:href="@{/logout}"
+               class="btn-logout"
+               style="display:inline-flex;align-items:center;gap:6px;">
+                <span class="material-symbols-outlined"
+                      style="font-size:20px;line-height:1;">logout</span>
+                <span style="line-height:1;">Cerrar Sesión</span>
+            </a>
+        </div>
+    </div>
+</header>
+
+<div class="main-content">
+    <div class="container">
+
+        <a th:href="@{/dashboard-cliente}" class="btn-volver">
+            <span class="material-symbols-outlined">arrow_back</span>
+            Volver al dashboard
+        </a>
+
+        <div class="page-header">
+            <h1 class="page-title">
+                Mis Citas
+                <span class="material-symbols-outlined">event</span>
+            </h1>
+            <p class="page-subtitle">Gestiona todas tus citas programadas</p>
+        </div>
+
+        <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+        <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
+
+        <div th:if="${citas != null and !citas.isEmpty()}" class="citas-grid">
+            <div th:each="cita : ${citas}"
+                 th:class="'cita-card' + ${cita.estado == 'cancelada' ? ' cancelada' : ''}">
+
+                <div class="cita-card-header">
+                    <div class="cita-fecha-hora">
+                        <div class="cita-fecha">
+                            <span class="material-symbols-outlined">calendar_month</span>
+                            <span th:text="${cita.fecha}">DD/MM/YYYY</span>
+                        </div>
+
+                        <div class="cita-hora"
+                             style="display:flex;align-items:center;gap:6px;">
+                            <span class="material-symbols-outlined"
+                                  style="font-size:20px;line-height:1;">schedule</span>
+                            <span th:text="${cita.hora}" style="line-height:1;">HH:MM</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="cita-card-body">
+                    <div class="cita-info-item">
+                        <div class="cita-info-icon">
+                            <span class="material-symbols-outlined">content_cut</span>
+                        </div>
+                        <div class="cita-info-content">
+                            <div class="cita-info-label">Servicio</div>
+                            <div class="cita-info-value"
+                                 th:text="${cita.nombreServicio}">Servicio</div>
+                        </div>
+                    </div>
+
+                    <div class="cita-info-item">
+                        <div class="cita-info-icon">
+                            <span class="material-symbols-outlined">person</span>
+                        </div>
+                        <div class="cita-info-content">
+                            <div class="cita-info-label">Empleado</div>
+                            <div class="cita-info-value"
+                                 th:text="${cita.nombreEmpleado}">Empleado</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="cita-card-footer" th:if="${cita.estado != 'cancelada'}">
+                    <!-- Botón cancelar -->
+                    <button class="btn-cancelar-cita"
+                            th:attr="data-cita-id=${cita.id_cita},
+                                     data-fecha=${cita.fecha},
+                                     data-hora=${cita.hora}"
+                            onclick="abrirModalCancelar(this)"
+                            style="display:inline-flex;align-items:center;gap:6px;">
+                        <span class="material-symbols-outlined"
+                              style="font-size:20px;line-height:1;">cancel</span>
+                        <span style="line-height:1;">Cancelar cita</span>
+                    </button>
+
+                    <!-- Botón añadir reseña -->
+                    <button class="btn-resena-cita "
+                            th:attr="data-empleado-id=${cita.empleado_id},
+                                     data-fecha=${cita.fecha},
+                                     data-hora=${cita.hora}"
+                            onclick="abrirModalResena(this)"
+                            style="display:inline-flex;align-items:center;gap:6px">
+                        <span class="material-symbols-outlined"
+                              style="font-size:20px;line-height:1;">star</span>
+                        <span style="line-height:1;">Añadir reseña</span>
+                    </button>
+                </div>
+
+                <div class="cita-card-footer" th:if="${cita.estado == 'cancelada'}">
+                    <button class="btn-cancelar-cita" disabled>
+                        <span class="material-symbols-outlined">block</span>
+                        Cita cancelada
+                    </button>
+                </div>
+
+            </div>
+        </div>
+
+        <div th:if="${citas == null or citas.isEmpty()}" class="empty-citas">
+            <div class="empty-citas-icon"
+                 style="display:flex;justify-content:center;align-items:center;">
+                <span class="material-symbols-outlined"
+                      style="font-size:64px;line-height:1;">event_busy</span>
+            </div>
+            <h3>No tienes citas</h3>
+            <p>Aún no has reservado ninguna cita</p>
+            <a th:href="@{/dashboard-cliente}" class="btn-primary">
+                Volver al dashboard
+            </a>
+        </div>
+
+    </div>
+</div>
+
+<!-- MODAL CANCELAR -->
+<div class="modal-cancelar" id="modalCancelar">
+    <div class="modal-content-cancelar">
+        <div class="modal-header-cancelar">
+            <span class="material-symbols-outlined">warning</span>
+            <h2>Cancelar Cita</h2>
+        </div>
+        <div class="modal-body-cancelar">
+            <p>
+                Estás a punto de cancelar tu cita del
+                <strong id="citaFechaModal"></strong>
+                a las
+                <strong id="citaHoraModal"></strong>.
+            </p>
+        </div>
+        <div class="modal-footer-cancelar">
+            <button class="btn-modal btn-modal-secundario"
+                    onclick="cerrarModalCancelar()">
+                Mantener cita
+            </button>
+
+            <button class="btn-modal btn-modal-peligro"
+                    onclick="confirmarCancelacion()">
+                Cancelar cita
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL RESEÑA -->
+<div class="modal-resena" id="modalResena">
+    <div class="modal-content-resena">
+        <div class="modal-header-resena">
+            <span class="material-symbols-outlined">star</span>
+            <h2>Añadir Reseña</h2>
+        </div>
+        <form id="formResena" th:action="@{/cliente-citas/crear-resena}" method="post">
+            <input type="hidden" id="empleadoIdResena" name="empleadoId">
+            
+            <div class="modal-body-resena">
+                <div class="form-group-resena">
+                    <label>Puntuación</label>
+                    <div class="rating-stars">
+                        <span class="star" data-value="1">★</span>
+                        <span class="star" data-value="2">★</span>
+                        <span class="star" data-value="3">★</span>
+                        <span class="star" data-value="4">★</span>
+                        <span class="star" data-value="5">★</span>
+                    </div>
+                    <input type="hidden" id="puntuacionResena" name="puntuacion" required>
+                </div>
+
+                <div class="form-group-resena">
+                    <label for="comentarioResena">Comentario</label>
+                    <textarea id="comentarioResena" 
+                              name="comentario" 
+                              rows="4" 
+                              placeholder="Cuéntanos tu experiencia..."
+                              required></textarea>
+                </div>
+            </div>
+
+            <div class="modal-footer-resena">
+                <button type="button" 
+                        class="btn-modal btn-modal-secundario"
+                        onclick="cerrarModalResena()">
+                    Cancelar
+                </button>
+
+                <button type="submit" 
+                        class="btn-modal btn-modal-primario">
+                    Enviar reseña
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    const resenasData = /*[[${resenas}]]*/ [];
+    /*]]>*/
+
+    let citaIdACancelar = null;
+
+    function toggleDropdown() {
+        document.getElementById('userDropdown').classList.toggle('active');
+    }
+
+    // ========== MODAL CANCELAR ==========
+    function abrirModalCancelar(btn) {
+        citaIdACancelar = btn.dataset.citaId;
+        document.getElementById('citaFechaModal').textContent = btn.dataset.fecha;
+        document.getElementById('citaHoraModal').textContent = btn.dataset.hora;
+        document.getElementById('modalCancelar').classList.add('active');
+    }
+
+    function cerrarModalCancelar() {
+        document.getElementById('modalCancelar').classList.remove('active');
+        citaIdACancelar = null;
+    }
+
+    function confirmarCancelacion() {
+        if (citaIdACancelar) {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '/cliente-citas/cancelar/' + citaIdACancelar;
+            document.body.appendChild(form);
+            form.submit();
+        }
+    }
+
+    // ========== MODAL RESEÑA ==========
+    function abrirModalResena(btn) {
+        document.getElementById('empleadoIdResena').value = btn.dataset.empleadoId;
+        document.getElementById('modalResena').classList.add('active');
+        resetRating();
+    }
+
+    function cerrarModalResena() {
+        document.getElementById('modalResena').classList.remove('active');
+        document.getElementById('formResena').reset();
+        resetRating();
+    }
+
+    function resetRating() {
+        document.querySelectorAll('.star').forEach(star => {
+            star.classList.remove('active');
+        });
+        document.getElementById('puntuacionResena').value = '';
+    }
+
+    // ========== RATING STARS ==========
+    document.querySelectorAll('.star').forEach(star => {
+        star.addEventListener('click', function() {
+            const value = this.dataset.value;
+            document.getElementById('puntuacionResena').value = value;
+            
+            // Actualizar visualización
+            document.querySelectorAll('.star').forEach(s => {
+                s.classList.remove('active');
+            });
+            
+            for (let i = 0; i < value; i++) {
+                document.querySelectorAll('.star')[i].classList.add('active');
+            }
+        });
+    });
+
+    // ========== LÓGICA DE CITAS PASADAS ==========
+    document.addEventListener('DOMContentLoaded', function () {
+        // Crear set de empleados con reseña
+        const empleadosConResena = new Set();
+        if (resenasData && resenasData.length > 0) {
+            resenasData.forEach(resena => {
+                empleadosConResena.add(resena.empleadoId);
+            });
+        }
+
+        document.querySelectorAll('.btn-cancelar-cita, .btn-resena-cita').forEach(btn => {
+            const fecha = btn.dataset.fecha;
+            const hora = btn.dataset.hora;
+            if (!fecha || !hora) return;
+
+            let f = fecha.includes('/')
+                ? fecha.split('/').reverse().join('-')
+                : fecha;
+
+            const fechaCita = new Date(`${f}T${hora}`);
+            const ahora = new Date();
+
+            // Si la cita ya pasó
+            if (fechaCita < ahora) {
+                if (btn.classList.contains('btn-cancelar-cita')) {
+                    // Deshabilitar botón de cancelar
+                    btn.disabled = true;
+                    btn.innerHTML = `
+                        <span class="material-symbols-outlined"
+                              style="font-size:20px;line-height:1;">check_circle</span>
+                        <span style="line-height:1;">Cita terminada</span>
+                    `;
+                    btn.classList.add('btn-cita-terminada');
+                    btn.removeAttribute('onclick');
+                }
+                
+                if (btn.classList.contains('btn-resena-cita')) {
+                    const empleadoId = parseInt(btn.dataset.empleadoId);
+                    
+                    // Si ya tiene reseña para este empleado, deshabilitar
+                    if (empleadosConResena.has(empleadoId)) {
+                        btn.disabled = true;
+                        btn.innerHTML = `
+                            <span class="material-symbols-outlined"
+                                  style="font-size:20px;line-height:1;">star</span>
+                            <span style="line-height:1;">Reseña enviada</span>
+                        `;
+                        btn.classList.add('btn-resena-enviada');
+                        btn.removeAttribute('onclick');
+                    }
+                }
+            } else {
+                // Si la cita NO ha pasado, ocultar botón de reseña
+                if (btn.classList.contains('btn-resena-cita')) {
+                    btn.style.display = 'none';
+                }
+            }
+        });
+    });
+</script>
+
+</body>
+</html>

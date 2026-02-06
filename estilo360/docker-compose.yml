@@ -1,0 +1,35 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: estilo360_postgres
+    environment:
+      POSTGRES_USER: estilo360
+      POSTGRES_PASSWORD: estilo360pass
+      POSTGRES_DB: estilo360db
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data
+    networks:
+      - estilo360-network
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: estilo360_pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@estilo360.com
+      PGADMIN_DEFAULT_PASSWORD: admin123
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres
+    networks:
+      - estilo360-network
+
+volumes:
+  postgres_data:
+
+networks:
+  estilo360-network:

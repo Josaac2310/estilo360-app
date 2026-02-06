@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Empleado - Estilo360</title>
+
+    <!-- Material Symbols -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/empleados.css}">
+</head>
+<body>
+
+<!-- Header -->
+<header class="header">
+    <div class="header-container">
+
+        <div class="header-logo"
+             style="display:flex; align-items:center; gap:6px;">
+            <span>Estilo360</span>
+        </div>
+
+        <div class="header-right">
+
+            <div class="user-info"
+                 style="display:flex; align-items:center; gap:4px;">
+                <span class="user-label">Admin:</span>
+                <span class="user-name" th:text="${nombre}">Usuario</span>
+            </div>
+
+            <a th:href="@{/logout}"
+               class="btn-logout"
+               style="display:flex; align-items:center; gap:6px;">
+                <span class="material-symbols-outlined" style="line-height:1;">
+                    logout
+                </span>
+                <span>Cerrar Sesión</span>
+            </a>
+
+        </div>
+    </div>
+</header>
+
+<!-- Main Content -->
+<main class="main-content">
+    <div class="container">
+
+        <!-- Breadcrumb -->
+        <div class="breadcrumb"
+             style="display:flex; align-items:center; gap:6px;">
+
+            <a th:href="@{/dashboard}"
+               style="display:flex; align-items:center; gap:4px;">
+                <span class="material-symbols-outlined" style="line-height:1;">
+                    home
+                </span>
+                <span>Dashboard</span>
+            </a>
+
+            <span>›</span>
+
+            <a th:href="@{/empleados}"
+               style="display:flex; align-items:center; gap:4px;">
+                <span class="material-symbols-outlined" style="line-height:1;">
+                    person
+                </span>
+                <span>Empleados</span>
+            </a>
+
+            <span>›</span>
+
+            <span style="display:flex; align-items:center; gap:4px;">
+                <span class="material-symbols-outlined" style="line-height:1;">
+                    edit
+                </span>
+                <span>Editar Empleado</span>
+            </span>
+
+        </div>
+
+        <!-- Form Container -->
+        <div class="form-container">
+
+            <div class="form-header">
+                <h1>
+                    <span class="material-symbols-outlined" style="line-height:1;">
+                        edit
+                    </span>
+                    <span>Editar Empleado</span>
+                </h1>
+                <p>Modifica los datos del empleado</p>
+            </div>
+
+            <!-- Información del ID -->
+            <div class="info-card">
+                <div class="info-item">
+                    <span class="info-label">ID del Empleado:</span>
+                    <span class="info-value" th:text="${empleado.id_empleado}">1</span>
+                </div>
+            </div>
+
+            <!-- Alertas -->
+            <div th:if="${error}"
+                 class="alert alert-error"
+                 style="display:flex; align-items:center; gap:6px;">
+                <span class="material-symbols-outlined" style="line-height:1;">
+                    error
+                </span>
+                <span th:text="${error}"></span>
+            </div>
+
+            <form th:action="@{/empleados/editar/{id}(id=${empleado.id_empleado})}"
+                  method="post"
+                  th:object="${empleado}">
+
+                <div class="form-group">
+                    <label>Nombre Completo *</label>
+                    <input type="text"
+                           th:field="*{nombre_completo}"
+                           placeholder="Ej: María López Gómez"
+                           maxlength="50"
+                           required>
+                </div>
+				<br>
+                <div class="form-group">
+                    <label>Especialidad *</label>
+                    <input type="text"
+                           th:field="*{especialidad}"
+                           placeholder="Ej: Estilista, Barbero, Colorista"
+                           maxlength="50"
+                           required>
+                </div>
+				<br>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Correo Electrónico *</label>
+                        <input type="email"
+                               th:field="*{correo}"
+                               placeholder="empleado@estilo360.com"
+                               maxlength="255"
+                               pattern="^[^@\s]+@[^@\s]+\.[^@\s]+$"
+                               required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Móvil *</label>
+                        <input type="text"
+                               th:field="*{movil}"
+                               placeholder="699888777"
+                               pattern="[0-9]{9,15}"
+                               maxlength="15"
+                               required>
+                        <small>Formato: 9-15 dígitos</small>
+                    </div>
+                </div>
+
+                <div class="form-actions"
+                     style="display:flex; justify-content:space-between;">
+
+                    <a th:href="@{/empleados}"
+                       class="btn-secondary"
+                       style="display:flex; align-items:center; gap:6px;">
+                        <span class="material-symbols-outlined" style="line-height:1;">
+                            arrow_back
+                        </span>
+                        <span>Cancelar</span>
+                    </a>
+
+                    <button type="submit"
+                            class="btn-primary"
+                            style="display:flex; align-items:center; gap:6px;">
+                        <span class="material-symbols-outlined" style="line-height:1;">
+                            save
+                        </span>
+                        <span>Guardar Cambios</span>
+                    </button>
+
+                </div>
+
+            </form>
+        </div>
+    </div>
+</main>
+
+</body>
+</html>

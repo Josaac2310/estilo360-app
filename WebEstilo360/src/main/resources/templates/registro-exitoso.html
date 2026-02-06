@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verificar Cuenta - Estilo360</title>
+    <link rel="stylesheet" th:href="@{/css/login.css}">
+</head>
+<body>
+
+<div class="login-wrapper">
+
+    <!-- Imagen izquierda -->
+    <div class="login-image">
+        <img th:src="@{/images/logoEstilo360.png}" alt="Logo Estilo360">
+    </div>
+
+    <!-- Contenedor derecho -->
+    <div class="login-container">
+
+        <div class="login-header">
+            <h1>Verifica tu cuenta</h1>
+            <p>Revisa tu correo electrónico</p>
+        </div>
+
+        <div class="login-body">
+
+            <!-- Mensaje de éxito -->
+            <div th:if="${success}" class="alert alert-success">
+                <strong>Éxito:</strong>
+                <span th:text="${success}"></span>
+            </div>
+
+            <!-- Mensaje de error -->
+            <div th:if="${error}" class="alert alert-error">
+                <strong>Error:</strong>
+                <span th:text="${error}"></span>
+            </div>
+
+            <div style="padding: 20px; background: #f8f9fa; border-radius: 8px; margin-bottom: 20px;">
+                <p style="margin: 0 0 10px 0; color: #666;">
+                    Te hemos enviado un código de verificación de <strong>6 dígitos</strong> a:
+                </p>
+                <p style="margin: 0; font-size: 16px; font-weight: bold; color: #333;">
+                    <span th:text="${param.correo}"></span>
+                </p>
+            </div>
+
+            <!-- Formulario de verificación -->
+            <form th:action="@{/verificar-codigo}" method="post">
+
+                <!-- Campo oculto con el correo -->
+                <input type="hidden" name="correo" th:value="${param.correo}">
+
+                <div class="form-group">
+                    <label for="codigo">Código de verificación</label>
+                    <input
+                        type="text"
+                        id="codigo"
+                        name="codigo"
+                        placeholder="123456"
+                        maxlength="6"
+                        pattern="[0-9]{6}"
+                        required
+                        autofocus
+                        style="text-align: center; font-size: 24px; letter-spacing: 8px;">
+                </div>
+
+                <button type="submit" class="btn-login">
+                    Verificar Cuenta
+                </button>
+            </form>
+
+            <div style="margin-top: 20px; padding: 15px; background: #fff3cd; border-radius: 8px;">
+                <p style="margin: 0; font-size: 14px; color: #856404;">
+                    💡 <strong>Consejo:</strong> Si no ves el correo, revisa tu carpeta de spam.
+                </p>
+            </div>
+        </div>
+
+        <div class="register-section">
+            <p>¿Ya verificaste tu cuenta?
+                <a th:href="@{/login}">Inicia sesión aquí</a>
+            </p>
+        </div>
+
+        <div class="login-footer">
+            &copy; 2025 Estilo360
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>

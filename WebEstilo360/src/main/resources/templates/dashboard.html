@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Estilo360</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            min-height: 100vh;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-brand {
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .navbar-menu {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .navbar-menu a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: opacity 0.3s ease;
+        }
+
+        .navbar-menu a:hover {
+            opacity: 0.8;
+        }
+
+        .btn-logout {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 8px 20px;
+            border: 2px solid white;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-logout:hover {
+            background: white;
+            color: #667eea;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        /* Alert */
+        .alert {
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            font-size: 15px;
+            animation: slideDown 0.5s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .alert-success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+
+        /* Welcome Card */
+        .welcome-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            text-align: center;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .welcome-card h1 {
+            color: #333;
+            font-size: 32px;
+            margin-bottom: 15px;
+        }
+
+        .welcome-card p {
+            color: #666;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        /* Cards Grid */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        .card h3 {
+            color: #333;
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+        .card p {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        /* Token Info */
+        .token-info {
+            background: #e8f4f8;
+            border: 1px solid #b8dce8;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #31708f;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="navbar-brand">
+            ✨ Estilo360
+        </div>
+        <div class="navbar-menu">
+            <a href="/dashboard">🏠 Inicio</a>
+            <a href="/usuarios">👥 Usuarios</a>
+            <a th:href="@{/logout}" class="btn-logout">🚪 Cerrar Sesión</a>
+        </div>
+    </nav>
+
+    <!-- Container -->
+    <div class="container">
+        <!-- Mensaje de éxito -->
+        <div th:if="${success}" class="alert alert-success">
+            <strong>✅</strong> <span th:text="${success}"></span>
+        </div>
+
+        <!-- Welcome Card -->
+        <div class="welcome-card">
+            <h1>🎉 ¡Bienvenido al Dashboard!</h1>
+            <p>Has iniciado sesión correctamente en Estilo360.</p>
+            <p>Desde aquí puedes gestionar usuarios, citas, servicios y más.</p>
+            
+            <!-- Info del token (solo para desarrollo) -->
+            <div class="token-info" th:if="${token}">
+                <strong>🔑 Estado de autenticación:</strong> 
+                <span th:text="${token}"></span>
+            </div>
+        </div>
+
+        <!-- Cards Grid -->
+        <div class="cards-grid">
+            <!-- Card Usuarios -->
+            <a href="/usuarios" class="card">
+                <div class="card-icon">👥</div>
+                <h3>Gestión de Usuarios</h3>
+                <p>Ver, crear, editar y eliminar usuarios del sistema.</p>
+            </a>
+
+            <!-- Card Citas -->
+            <a href="/citas" class="card">
+                <div class="card-icon">📅</div>
+                <h3>Citas</h3>
+                <p>Administrar citas y reservas de los clientes.</p>
+            </a>
+
+            <!-- Card Servicios -->
+            <a href="/servicios" class="card">
+                <div class="card-icon">💇</div>
+                <h3>Servicios</h3>
+                <p>Gestionar servicios disponibles y sus precios.</p>
+            </a>
+
+            <!-- Card Reseñas -->
+            <a href="/resenas" class="card">
+                <div class="card-icon">⭐</div>
+                <h3>Reseñas</h3>
+                <p>Ver y moderar reseñas de clientes.</p>
+            </a>
+
+            <!-- Card Reportes -->
+            <a href="/reportes" class="card">
+                <div class="card-icon">📊</div>
+                <h3>Reportes</h3>
+                <p>Estadísticas y reportes del negocio.</p>
+            </a>
+
+            <!-- Card Configuración -->
+            <a href="/configuracion" class="card">
+                <div class="card-icon">⚙️</div>
+                <h3>Configuración</h3>
+                <p>Configuración general del sistema.</p>
+            </a>
+        </div>
+    </div>
+</body>
+</html>

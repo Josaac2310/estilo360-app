@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nuevo Servicio - Estilo360</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/servicios.css}">
+</head>
+<body>
+
+<!-- Header -->
+<header class="header">
+    <div class="header-container">
+
+        <div class="header-logo"
+             style="display:flex; align-items:center; gap:6px;">
+            <span>Estilo360</span>
+        </div>
+
+        <div class="header-right">
+
+            <div class="user-info">
+                    <span class="user-label">Admin:</span>
+                    <span class="user-name" th:text="${nombre}">Usuario</span>
+             </div>
+
+            <a th:href="@{/logout}" class="btn-logout"
+               style="display:flex; align-items:center; gap:6px;">
+                <span class="material-symbols-outlined" style="line-height:1;">logout</span>
+                <span>Cerrar Sesión</span>
+            </a>
+
+        </div>
+    </div>
+</header>
+
+<!-- Main Content -->
+<main class="main-content">
+    <div class="container">
+
+        <!-- Breadcrumb -->
+        <div class="breadcrumb" style="display:flex; align-items:center; gap:6px;">
+
+		    <a th:href="@{/dashboard}" style="display:flex; align-items:center; gap:4px;">
+		        <span class="material-symbols-outlined" style="line-height:1; font-size:20px;">home</span>
+		        <span style="position:relative; top:0px;">Dashboard</span>
+		    </a>
+		
+		    <span>›</span>
+		
+		    <a th:href="@{/servicios}" style="display:flex; align-items:center; gap:4px;">
+		        <span class="material-symbols-outlined" style="line-height:1; font-size:20px;">content_cut</span>
+		        <span style="position:relative; top:0px;">Servicios</span>
+		    </a>
+		
+		    <span>›</span>
+		
+		    <span style="display:flex; align-items:center; gap:4px;">
+		        <span class="material-symbols-outlined" style="line-height:1; font-size:20px;">add_circle</span>
+		        <span>Nuevo Servicio</span>
+		    </span>
+		
+		</div>
+
+
+        <!-- Form Container -->
+        <div class="form-container"> 
+        	<div class="form-header"> 
+        		<h1 class="icon-text"> 
+        			<span class="material-symbols-outlined">add_circle</span> 
+        			<span>Nuevo Servicio</span> 
+        		</h1> 
+        		<p>Completa los datos para crear un nuevo servicio</p> </div>
+
+            <!-- Alertas -->
+            <div th:if="${error}"
+                 class="alert alert-error"
+                 style="display:flex; align-items:center; gap:6px;">
+                <span class="material-symbols-outlined" style="line-height:1;">error</span>
+                <span th:text="${error}"></span>
+            </div>
+
+            <form th:action="@{/servicios/nuevo}" method="post" th:object="${servicio}">
+
+                <div class="form-group">
+                    <label>Nombre del Servicio *</label>
+                    <input type="text"
+                           th:field="*{nombre}"
+                           placeholder="Ej: Corte de pelo"
+                           maxlength="50"
+                           required>
+                </div>
+				<br>
+                <div class="form-group">
+                    <label>Descripción</label>
+                    <textarea th:field="*{descripcion}"
+                              rows="4"
+                              placeholder="Describe el servicio (opcional)"
+                              maxlength="255"></textarea>
+                </div>
+				
+				<br>
+				
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Precio (€) *</label>
+                        <input type="number"
+                               th:field="*{precio}"
+                               step="0.01"
+                               min="0.01"
+                               placeholder="15.00"
+                               required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Duración (minutos) *</label>
+                        <input type="number"
+                               th:field="*{duracion_minutos}"
+                               min="1"
+                               placeholder="30"
+                               required>
+                    </div>
+                </div>
+
+                <div class="form-actions"
+                     style="display:flex; justify-content:space-between;">
+
+                    <a th:href="@{/servicios}"
+                       class="btn-secondary"
+                       style="display:flex; align-items:center; gap:6px;">
+                        <span class="material-symbols-outlined" style="line-height:1;">arrow_back</span>
+                        <span>Cancelar</span>
+                    </a>
+
+                    <button type="submit"
+                            class="btn-primary"
+                            style="display:flex; align-items:center; gap:6px;">
+                        <span class="material-symbols-outlined" style="line-height:1;">check_circle</span>
+                        <span>Crear Servicio</span>
+                    </button>
+
+                </div>
+
+            </form>
+        </div>
+    </div>
+</main>
+
+</body>
+</html>

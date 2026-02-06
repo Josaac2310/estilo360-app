@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Reseñas - Estilo360</title>
+
+    <link rel="stylesheet" th:href="@{/css/resenas.css}">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+</head>
+<body>
+
+<!-- Header -->
+<header class="header">
+    <div class="header-container">
+
+        <div class="header-logo"
+             style="display:flex; align-items:center; gap:6px;">
+            <span>Estilo360</span>
+        </div>
+
+        <div class="header-right">
+
+            <div class="user-info icon-text">
+                <span class="user-label">Admin:</span>
+                <span class="user-name" th:text="${nombre}">Usuario</span>
+            </div>
+
+            <a th:href="@{/logout}" class="btn-logout"
+               style="display:flex; align-items:center; gap:6px;">
+                <span class="material-symbols-outlined" style="line-height:1;">logout</span>
+                <span>Cerrar Sesión</span>
+            </a>
+
+        </div>
+    </div>
+</header>
+
+<!-- Main Content -->
+<main class="main-content">
+    <div class="container">
+
+        <!-- Breadcrumb -->
+        <div class="breadcrumb"
+		     style="display:flex; align-items:center; gap:6px;">
+		
+		    <a th:href="@{/dashboard}"
+		       style="display:flex; align-items:center; gap:4px;">
+		        <span class="material-symbols-outlined" style="line-height:1;">home</span>
+		        <span>Dashboard</span>
+		    </a>
+		
+		    <span>›</span>
+		
+		    <span style="display:flex; align-items:center; gap:4px;">
+		        <span class="material-symbols-outlined" style="line-height:1;">star</span>
+		        <span>Reseñas</span>
+		    </span>
+		</div>
+
+
+        <!-- Header Section -->
+        <div class="page-header">
+            <div>
+                <h1>Gestión de Reseñas</h1>
+                <p>Visualiza y modera las reseñas de los clientes</p>
+            </div>
+        </div>
+
+        <!-- Alertas -->
+        <div th:if="${success}" class="alert alert-success"
+             style="display:flex; align-items:center; gap:6px;">
+            <span class="material-symbols-outlined" style="line-height:1;">check_circle</span>
+            <span th:text="${success}"></span>
+        </div>
+
+        <div th:if="${error}" class="alert alert-error"
+             style="display:flex; align-items:center; gap:6px;">
+            <span class="material-symbols-outlined" style="line-height:1;">error</span>
+            <span th:text="${error}"></span>
+        </div>
+
+        <!-- Tabla de Reseñas -->
+        <div class="table-container">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Cliente</th>
+                    <th>Empleado</th>
+                    <th>Puntuación</th>
+                    <th>Comentario</th>
+                    <th>Fecha</th>
+                    <th>Acciones</th>
+                </tr>
+                </thead>
+
+                <tbody>
+
+                <tr th:if="${#lists.isEmpty(resenas)}">
+                    <td colspan="7" class="empty-message"
+                        style="display:flex; align-items:center; justify-content:center; gap:6px;">
+                        <span class="material-symbols-outlined" style="line-height:1;">rate_review</span>
+                        <span>No hay reseñas registradas</span>
+                    </td>
+                </tr>
+
+                <tr th:each="resena : ${resenas}">
+                    <td th:text="${resena.id_resena}">1</td>
+                    <td th:text="${resena.nombreUsuario}">Cliente</td>
+                    <td th:text="${resena.nombreEmpleado}">Empleado</td>
+
+                    <td>
+                        <div class="estrellas"
+                             style="display:flex; align-items:center; gap:4px;">
+                            <span th:each="i : ${#numbers.sequence(1, 5)}"
+                                  th:text="${i <= resena.puntuacion ? '⭐' : '☆'}"
+                                  th:class="${i <= resena.puntuacion ? 'estrella-llena' : 'estrella-vacia'}">
+                                ⭐
+                            </span>
+                            <span class="puntuacion-numero"
+                                  th:text="'(' + ${resena.puntuacion} + '/5)'">
+                                (5/5)
+                            </span>
+                        </div>
+                    </td>
+
+                    <td class="comentario-cell">
+                        <span th:text="${resena.comentario}">Excelente atención</span>
+                    </td>
+
+                    <td th:text="${resena.fecha}">24-12-2025</td>
+
+                    <td class="actions"
+                        style="display:flex; align-items:center; gap:6px;">
+
+                        <button type="button"
+                                class="btn-delete btn-delete-resena"
+                                th:attr="data-id=${resena.id_resena},data-cliente=${resena.nombreUsuario}"
+                                title="Eliminar reseña"
+                                style="display:flex; align-items:center;">
+                            <span class="material-symbols-outlined" style="line-height:1;">delete</span>
+                        </button>
+
+                    </td>
+                </tr>
+
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</main>
+
+<!-- Modal de Confirmación -->
+<div id="modalEliminar" class="modal">
+    <div class="modal-content">
+
+        <div class="modal-header"
+             style="display:flex; align-items:center; gap:6px;">
+            <span class="material-symbols-outlined" style="line-height:1;">warning</span>
+            <h2>Confirmar Eliminación</h2>
+        </div>
+
+        <div class="modal-body">
+            <p>¿Estás seguro de que deseas eliminar la reseña de:</p>
+            <p class="modal-item-name" id="nombreCliente"></p>
+            <p class="modal-warning">Esta acción no se puede deshacer.</p>
+        </div>
+
+        <div class="modal-footer">
+            <button type="button" onclick="cerrarModal()" class="btn-secondary">
+                Cancelar
+            </button>
+
+            <form id="formEliminar" method="post" style="display:inline;">
+                <button type="submit" class="btn-danger"
+                        style="display:flex; align-items:center; gap:6px;">
+                    <span class="material-symbols-outlined" style="line-height:1;">delete_forever</span>
+                    <span>Eliminar</span>
+                </button>
+            </form>
+        </div>
+
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const botonesEliminar = document.querySelectorAll('.btn-delete-resena');
+    botonesEliminar.forEach(function(boton) {
+        boton.addEventListener('click', function() {
+            const id = this.getAttribute('data-id');
+            const cliente = this.getAttribute('data-cliente');
+            abrirModalEliminar(id, cliente);
+        });
+    });
+});
+
+function abrirModalEliminar(id, cliente) {
+    document.getElementById('formEliminar').action = '/resenas/eliminar/' + id;
+    document.getElementById('nombreCliente').textContent = cliente;
+    document.getElementById('modalEliminar').style.display = 'flex';
+}
+
+function cerrarModal() {
+    document.getElementById('modalEliminar').style.display = 'none';
+}
+
+window.onclick = function(event) {
+    const modal = document.getElementById('modalEliminar');
+    if (event.target === modal) cerrarModal();
+}
+</script>
+
+</body>
+</html>

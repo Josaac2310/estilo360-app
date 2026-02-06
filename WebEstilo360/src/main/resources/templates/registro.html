@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro - Estilo360</title>
+    <link rel="stylesheet" th:href="@{/css/login.css}">
+</head>
+<body>
+
+<div class="login-wrapper">
+
+    <!-- Imagen izquierda -->
+    <div class="login-image">
+        <img th:src="@{/images/logoEstilo360.png}" alt="Logo Estilo360">
+    </div>
+
+    <!-- Contenedor derecho -->
+    <div class="login-container">
+
+        <div class="login-header">
+            <h1>Crear cuenta</h1>
+            <p>Únete a Estilo360</p>
+        </div>
+
+        <div class="login-body">
+
+            <!-- Error -->
+            <div th:if="${error}" class="alert alert-error">
+                <strong>Error:</strong>
+                <span th:text="${error}"></span>
+            </div>
+
+            <!-- Éxito -->
+            <div th:if="${success}" class="alert alert-success">
+                <strong>Éxito:</strong>
+                <span th:text="${success}"></span>
+            </div>
+
+            <form th:action="@{/registro}" method="post" th:object="${usuario}">
+				
+                <div class="form-group">
+				    <label for="nombre">Nombre completo</label>
+				    <input type="text"
+				           id="nombre"
+				           th:field="*{nombre_completo}"
+				           required
+				           maxlength="50"
+				           placeholder="Introduce tu nombre completo (máx. 50 caracteres)">
+				    
+				    <!-- Mensaje personalizado si hay error -->
+				    <div th:if="${#fields.hasErrors('nombre_completo')}" class="alert alert-error">
+				        <span th:each="err : ${#fields.errors('nombre_completo')}" th:text="'Nombre inválido'"></span>
+				    </div>
+				</div>
+
+                
+               
+                <div class="form-group">
+			    <label for="correo">Correo electrónico</label>
+			    <input type="text"
+			           id="correo"
+			           th:field="*{correo}"
+			           required
+			           placeholder="Introduce un correo válido (ej: usuario@gmail.com)">
+			    
+			    <!-- Mensaje de error -->
+			    <div id="correoError" class="alert alert-error" style="display: none;"></div>
+			</div>
+
+
+
+
+
+                <div class="form-group">
+				    <label for="movil">Móvil</label>
+				    <input type="text"
+				           id="movil"
+				           th:field="*{movil}"
+				           required
+				           pattern="^[6789]\d{8}$"
+				           maxlength="9"
+				           placeholder="Introduce tu móvil (9 dígitos)">
+				    
+				    <!-- Mensaje personalizado si hay error -->
+				    <div th:if="${#fields.hasErrors('movil')}" class="alert alert-error">
+				        <span th:each="err : ${#fields.errors('movil')}" th:text="'Móvil inválido, debe tener 9 dígitos'"></span>
+				    </div>
+				</div>
+
+
+                <div class="form-group">
+                    <label for="contrasena">Contraseña</label>
+                    <input type="password" id="contrasena" th:field="*{contrasena}" required>
+                </div>
+
+                <button type="submit" class="btn-login">
+                    Registrarse
+                </button>
+            </form>
+        </div>
+
+        <div class="register-section">
+            <p>¿Ya tienes cuenta?
+                <a th:href="@{/login}">Inicia sesión</a>
+            </p>
+        </div>
+
+        <div class="login-footer">
+            &copy; 2025 Estilo360
+        </div>
+    </div>
+
+</div>
+
+</body>
+<script>
+    const form = document.querySelector('form');
+    const correoInput = document.getElementById('correo');
+    const correoError = document.getElementById('correoError');
+
+    form.addEventListener('submit', function(event) {
+        // Expresión regular para correo: usuario@dominio.tld
+        const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+        if (!emailPattern.test(correoInput.value)) {
+            event.preventDefault(); // Bloquea el envío del formulario
+            correoError.style.display = "block";
+            correoError.textContent = "Correo inválido, debe ser usuario@dominio.com";
+        } else {
+            correoError.style.display = "none"; // Oculta el mensaje si es válido
+        }
+    });
+</script>
+
+</html>
